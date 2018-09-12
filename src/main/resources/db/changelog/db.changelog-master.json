@@ -1,0 +1,7 @@
+{
+  "databaseChangeLog": {
+    "include" : {
+      "file" : "./versions/db.changelog.v1.json"
+    }
+  }
+}

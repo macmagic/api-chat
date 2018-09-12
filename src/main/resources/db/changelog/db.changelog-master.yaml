@@ -1,0 +1,5 @@
+databaseChangeLog:
+    - include:
+        file: db/changelog/versions/createTables001.json
+    - include:
+        file: db/changelog/versions/createIndexs001.json

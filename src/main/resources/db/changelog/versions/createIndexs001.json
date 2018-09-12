@@ -1,0 +1,214 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "add-primary-key",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_USER_ID",
+              "schemaName": "apichat",
+              "tableName": "user"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_CONTACT_LIST_STATUS",
+              "schemaName": "apichat",
+              "tableName": "contact_list_status"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_CONTACT_LIST",
+              "schemaName": "apichat",
+              "tableName": "contact_list"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_ROOM",
+              "schemaName": "apichat",
+              "tableName": "room"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_MESSAGE",
+              "schemaName": "apichat",
+              "tableName": "message"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_MESSAGE_TYPE",
+              "schemaName": "apichat",
+              "tableName": "message_type"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add-auto-increments",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "user"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "int",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "contact_list_status"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "contact_list"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "room"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "message"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "int",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "message_type"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add-constraints",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addUniqueConstraint": {
+              "catalogName": "apichat",
+              "columnNames": "email",
+              "constraintName": "UNIQUE_email",
+              "schemaName": "apichat",
+              "tableName": "user"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add-foreign-key-constraint",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "user_id",
+              "baseTableName": "contact_list",
+              "constraintName": "FK_USER_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "contact_user_id",
+              "baseTableName": "contact_list",
+              "constraintName": "FK_CONTACT_USER_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "status",
+              "baseTableName": "contact_list",
+              "constraintName": "FK_STATUS_CONTACT_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "contact_list_status"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "room_id",
+              "baseTableName": "room_user",
+              "constraintName": "FK_ROOM_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "room"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "user_id",
+              "baseTableName": "room_user",
+              "constraintName": "FK_ROOM_USER_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

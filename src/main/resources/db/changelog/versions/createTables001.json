@@ -1,0 +1,266 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "schema-creation-v1",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "email",
+                    "type": "varchar(45)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "password",
+                    "type": "varchar(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "salt",
+                    "type": "varchar(40)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "status",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "updated",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "user"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "name",
+                    "type": "varchar(100)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "contact_list_status"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "contact_user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "status",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "updated",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "contact_list"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "room_name",
+                    "type": "varchar(60)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "room_message_broadcast",
+                    "type": "varchar(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "room"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "room_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "rol",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "room_user"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "from",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "to",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "message_text",
+                    "type": "TEXT(4000)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "message_type",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "attach_url",
+                    "type": "varchar(250)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "datetime"
+                  }
+                }
+              ],
+              "tableName": "message"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "name",
+                    "type": "varchar(60)"
+                  }
+                }
+              ],
+              "tableName": "message_type"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
