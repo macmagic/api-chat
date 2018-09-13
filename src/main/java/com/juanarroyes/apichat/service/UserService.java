@@ -13,4 +13,8 @@ public interface UserService {
     User getUser(Long id) throws UserNotFoundException;
 
     List<User> getUsers();
+
+    User getUserByEmail(String email) throws UserNotFoundException;
+
+    boolean existsByUsername(String email);
 }
