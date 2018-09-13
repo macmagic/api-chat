@@ -1,0 +1,38 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "add-refresh-token-table",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "token",
+                    "type": "varchar(100)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "expiration_time",
+                    "type": "timestamp"
+                  }
+                }
+              ],
+              "tableName": "refresh_token"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

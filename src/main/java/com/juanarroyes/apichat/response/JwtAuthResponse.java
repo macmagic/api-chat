@@ -2,10 +2,22 @@ package com.juanarroyes.apichat.response;
 
 public class JwtAuthResponse {
     private String accessToken;
+    private String refreshToken;
     private String tokenType = "Bearer";
+    private Long expiresInMsec;
 
-    public JwtAuthResponse(String accessToken){
+    public JwtAuthResponse(String accessToken, String refreshToken, Long expiresInMsec){
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.expiresInMsec = expiresInMsec;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public String getAccessToken(){
@@ -16,11 +28,19 @@ public class JwtAuthResponse {
         this.accessToken = accessToken;
     }
 
-    private String getTokenType() {
+    public String getTokenType() {
         return tokenType;
     }
 
-    private void setTokenType(String tokenType) {
+    public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public Long getExpiresInMsec() {
+        return expiresInMsec;
+    }
+
+    public void setExpiresInMsec(Long expiresInMsec) {
+        this.expiresInMsec = expiresInMsec;
     }
 }
