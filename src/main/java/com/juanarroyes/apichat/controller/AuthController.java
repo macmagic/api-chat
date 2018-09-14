@@ -1,13 +1,13 @@
 package com.juanarroyes.apichat.controller;
 
-import com.juanarroyes.apichat.dto.UserObj;
 import com.juanarroyes.apichat.exception.BadRequestException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
-import com.juanarroyes.apichat.model.RefreshToken;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.repository.RefreshTokenRepository;
 import com.juanarroyes.apichat.repository.UserRepository;
+import com.juanarroyes.apichat.request.LoginRequest;
 import com.juanarroyes.apichat.request.RefreshTokenRequest;
+import com.juanarroyes.apichat.request.RegisterRequest;
 import com.juanarroyes.apichat.response.AuthResponse;
 import com.juanarroyes.apichat.security.UserPrincipal;
 import com.juanarroyes.apichat.service.TokenService;
@@ -27,13 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 @Slf4j
 @RestController
 @RequestMapping("/auth")
@@ -71,17 +66,17 @@ public class AuthController {
 
     /**
      *
-     * @param userObj
+     * @param request
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody UserObj userObj){
+    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest request){
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         AuthResponse response = null;
 
         try {
-            response = getAuthResponse(userObj.getEmail(), userObj.getPassword());
+            response = getAuthResponse(request.getEmail(), request.getPassword());
             httpStatus = HttpStatus.OK;
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
@@ -93,39 +88,40 @@ public class AuthController {
 
     /**
      *
-     * @param userObj
+     * @param request
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody UserObj userObj) {
+    public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         AuthResponse authResponse = null;
 
         try {
-            if(userObj.getEmail() == null || userObj.getEmail().equals("")){
+            if(request.getEmail() == null || request.getEmail().equals("")){
                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
 
-            if(userObj.getPassword() == null || userObj.getPassword().equals("")){
+            if(request.getPassword() == null || request.getPassword().equals("")){
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
 
-            if(userService.existsByUsername(userObj.getEmail())){
+            if(userService.existsByEmail(request.getEmail())){
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
 
-            User user = new User();
-            user.setEmail(userObj.getEmail());
-            user.setPassword(passwordEncoder.encode(userObj.getPassword()));
-            User result = userRepository.save(user);
-            authResponse = getAuthResponse(userObj.getEmail(), userObj.getPassword());
+            User result = userService.createUser(request.getEmail(), passwordEncoder.encode(request.getPassword()));
+            if(result == null) {
+                throw new Exception("Failed to create user");
+            }
+            authResponse = getAuthResponse(request.getEmail(), request.getPassword());
             httpStatus = HttpStatus.CREATED;
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
         } catch (Exception ex) {
             log.error("Unexpected error in method registerUser", ex);
         }
+
         return new ResponseEntity<>(authResponse, httpStatus);
     }
 

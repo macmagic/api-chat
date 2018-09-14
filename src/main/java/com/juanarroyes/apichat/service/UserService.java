@@ -16,5 +16,5 @@ public interface UserService {
 
     User getUserByEmail(String email) throws UserNotFoundException;
 
-    boolean existsByUsername(String email);
+    boolean existsByEmail(String email);
 }
