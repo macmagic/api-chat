@@ -1,7 +1,7 @@
 package com.juanarroyes.apichat.config;
 
-import com.juanarroyes.apichat.security.JwtAuthenticationEntryPoint;
-import com.juanarroyes.apichat.security.JwtAuthenticationFilter;
+import com.juanarroyes.apichat.security.AppAuthenticationEntryPoint;
+import com.juanarroyes.apichat.security.AuthenticationFilter;
 import com.juanarroyes.apichat.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,13 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
 
     @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
+    public AppAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new AppAuthenticationEntryPoint();
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter();
+    public AuthenticationFilter jwtAuthenticationFilter(){
+        return new AuthenticationFilter();
     }
 
     @Override
