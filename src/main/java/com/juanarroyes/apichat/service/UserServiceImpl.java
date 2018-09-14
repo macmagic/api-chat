@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String email, String password) throws UserAlreadyExistException {
+    public User createUser(String email, String passwordHash) throws UserAlreadyExistException {
 
         User userFound = userRepository.findByEmail(email);
 
@@ -34,15 +34,14 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setEmail(email);
 
-        PasswordAuth passwordAuth = new PasswordAuth();
-        user.setPassword(passwordAuth.hash(password.toCharArray()));
+        user.setPassword(passwordHash);
         user.setStatus(1);
         return userRepository.save(user);
     }
 
     public User getUser(Long id) throws UserNotFoundException {
 
-        User user = null;
+        User user;
         Optional<User> userFound = userRepository.findById(id);
 
         if(!userFound.isPresent()){
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public boolean existsByUsername(String username){
-        return userRepository.existsByEmail(username);
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
     }
 }
