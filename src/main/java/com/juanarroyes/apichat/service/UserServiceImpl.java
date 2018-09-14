@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public User getUser(Long id) throws UserNotFoundException{
+    public User getUser(Long id) throws UserNotFoundException {
 
         User user = null;
         Optional<User> userFound = userRepository.findById(id);
@@ -53,7 +53,20 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getUsers(){
-        List<User> usersFound = null;
         return userRepository.findAll();
+    }
+
+    public User getUserByEmail(String email) throws UserNotFoundException {
+
+        User user = userRepository.findByEmail(email);
+
+        if(user == null){
+            throw new UserNotFoundException("User not found");
+        }
+        return user;
+    }
+
+    public boolean existsByUsername(String username){
+        return userRepository.existsByEmail(username);
     }
 }

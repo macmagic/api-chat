@@ -40,7 +40,7 @@ public class UserController {
             log.info("User not found: " + userId);
             httpStatus = HttpStatus.NOT_FOUND;
         } catch(Exception ex){
-            log.error("Unexcepted exception in method getUser: " + ex.getMessage());
+            log.error("Unexpected exception in method getUser: " + ex.getMessage());
         }
         return new ResponseEntity<>(user, httpStatus);
     }

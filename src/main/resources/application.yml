@@ -1,7 +1,15 @@
+server:
+  port: 9000
+  compression:
+    enabled: true
+
 spring:
   application:
     name: apichat
 
+app:
+  jwtSecret: JWTSuperSecretKey
+  jwtExpirationInMs: 60840000
 
 ---
 
