@@ -8,23 +8,19 @@ import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.repository.RefreshTokenRepository;
 import com.juanarroyes.apichat.repository.UserRepository;
 import com.juanarroyes.apichat.request.RefreshTokenRequest;
-import com.juanarroyes.apichat.response.JwtAuthResponse;
-import com.juanarroyes.apichat.security.JwtTokenProvider;
+import com.juanarroyes.apichat.response.AuthResponse;
 import com.juanarroyes.apichat.security.UserPrincipal;
 import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,10 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import sun.security.util.Password;
 
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import java.net.URI;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -75,30 +69,19 @@ public class AuthController {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
+    /**
+     *
+     * @param userObj
+     * @return
+     */
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> authenticateUser(@Valid @RequestBody UserObj userObj){
+    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody UserObj userObj){
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        JwtAuthResponse response = null;
+        AuthResponse response = null;
 
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userObj.getEmail(), userObj.getPassword())
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-            String accessToken = tokenService .generateToken(userPrincipal);
-            String refreshToken = tokenService.generateRefreshToken();
-
-            try {
-                tokenService.saveRefreshToken(userPrincipal, refreshToken);
-            } catch (UserNotFoundException ex) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
-            }
-
-            response = new JwtAuthResponse(accessToken, refreshToken, jwtExpirationInMs);
+            response = getAuthResponse(userObj.getEmail(), userObj.getPassword());
             httpStatus = HttpStatus.OK;
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
@@ -108,44 +91,82 @@ public class AuthController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
+    /**
+     *
+     * @param userObj
+     * @return
+     */
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserObj userObj) {
-        if(userService.existsByUsername(userObj.getEmail())) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody UserObj userObj) {
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        AuthResponse authResponse = null;
+
+        try {
+            if(userObj.getEmail() == null || userObj.getEmail().equals("")){
+               throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
+
+            if(userObj.getPassword() == null || userObj.getPassword().equals("")){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
+
+            if(userService.existsByUsername(userObj.getEmail())){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
+
+            User user = new User();
+            user.setEmail(userObj.getEmail());
+            user.setPassword(passwordEncoder.encode(userObj.getPassword()));
+            User result = userRepository.save(user);
+            authResponse = getAuthResponse(userObj.getEmail(), userObj.getPassword());
+            httpStatus = HttpStatus.CREATED;
+        } catch (HttpClientErrorException ex) {
+            httpStatus = ex.getStatusCode();
+        } catch (Exception ex) {
+            log.error("Unexpected error in method registerUser", ex);
         }
-
-        User user = new User();
-        user.setEmail(userObj.getEmail());
-        user.setPassword(passwordEncoder.encode(userObj.getPassword()));
-
-        User result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getEmail()).toUri();
-
-        return ResponseEntity.created(location).body("User registered Correct");
+        return new ResponseEntity<>(authResponse, httpStatus);
     }
 
+    /**
+     *
+     * @param refreshTokenRequest
+     * @return
+     */
     @PostMapping("/token")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
         return refreshTokenRepository.findById(refreshTokenRequest.getRefreshToken()).map(refreshToken -> {
             User user = refreshToken.getUser();
             String accessToken = tokenService.generateToken(UserPrincipal.create(user));
-            return ResponseEntity.ok(new JwtAuthResponse(accessToken, refreshToken.getToken(), jwtExpirationInMs));
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken.getToken(), jwtExpirationInMs));
         }).orElseThrow(() -> new BadRequestException("Invalid Refresh Token"));
     }
 
-    private void saveRefreshToken(UserPrincipal userPrincipal, String tokenRefresh) {
+    /**
+     *
+     * @param email
+     * @param password
+     * @return
+     * @throws HttpClientErrorException
+     */
+    private AuthResponse getAuthResponse(String email, String password) throws HttpClientErrorException{
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        String accessToken = tokenService .generateToken(userPrincipal);
+        String refreshToken = tokenService.generateRefreshToken();
+
         try {
-            RefreshToken refreshToken = new RefreshToken();
-            refreshToken.setToken(tokenRefresh);
-            refreshToken.setUser(userService.getUser(userPrincipal.getId()));
-            Instant expirationTime = Instant.now().plus(30, ChronoUnit.DAYS);
-            refreshToken.setExpirationTime(expirationTime);
-            refreshTokenRepository.save(refreshToken);
+            tokenService.saveRefreshToken(userPrincipal, refreshToken);
         } catch (UserNotFoundException ex) {
-            log.error("User not found", ex);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
+
+        return new AuthResponse(accessToken, refreshToken, jwtExpirationInMs);
     }
 }

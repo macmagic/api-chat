@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.security;
 
 import com.juanarroyes.apichat.service.CustomUserDetailsService;
+import com.juanarroyes.apichat.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    private TokenService tokenService;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -30,10 +31,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(request);
+            String accessToken = getAccessTokenFromRequest(request);
 
-            if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)){
-                Long userId = tokenProvider.getUserIdFromJWT(jwt);
+            if(StringUtils.hasText(accessToken) && tokenService.validateToken(accessToken)){
+
+                Long userId = tokenService.getUserIdByToken(accessToken);
 
                 UserDetails userDetails = userDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -48,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
+    private String getAccessTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());

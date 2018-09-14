@@ -9,6 +9,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -16,12 +17,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
+@Service
 public class TokenServiceImpl implements TokenService {
 
     @Value("${app.jwtSecret}")
     private String secretKey;
 
-    @Value("${app.jwtExpirationInMs")
+    @Value("${app.jwtExpirationInMs}")
     private int expiredInMs;
 
     private RefreshTokenRepository refreshTokenRepository;

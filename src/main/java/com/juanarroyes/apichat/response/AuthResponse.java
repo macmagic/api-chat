@@ -1,12 +1,12 @@
 package com.juanarroyes.apichat.response;
 
-public class JwtAuthResponse {
+public class AuthResponse {
     private String accessToken;
     private String refreshToken;
     private String tokenType = "Bearer";
     private Long expiresInMsec;
 
-    public JwtAuthResponse(String accessToken, String refreshToken, Long expiresInMsec){
+    public AuthResponse(String accessToken, String refreshToken, Long expiresInMsec){
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiresInMsec = expiresInMsec;
