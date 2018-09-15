@@ -6,12 +6,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

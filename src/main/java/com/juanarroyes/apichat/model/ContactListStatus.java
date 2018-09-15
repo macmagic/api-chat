@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -8,25 +9,34 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name= "room_user")
+@Table(name= "contact_list_status")
 @EntityListeners(AuditingEntityListener.class)
-public class RoomUser implements Serializable{
+public class ContactListStatus implements Serializable {
 
-    @EmbeddedId RoomUserKey id;
+    @Id
+    private int id;
 
-    private String rol;
+    private String name;
 
     @CreationTimestamp
     @Column(nullable =  false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
-    public String getRol() {
-        return rol;
+    public int getId() {
+        return id;
     }
 
-    public void setRol(String rol) {
-        this.rol = rol;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getCreated() {
@@ -36,6 +46,4 @@ public class RoomUser implements Serializable{
     public void setCreated(Date created) {
         this.created = created;
     }
-
-
 }
