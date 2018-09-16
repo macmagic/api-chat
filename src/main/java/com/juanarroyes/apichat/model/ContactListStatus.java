@@ -14,7 +14,7 @@ import java.util.Date;
 public class ContactListStatus implements Serializable {
 
     @Id
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -23,11 +23,11 @@ public class ContactListStatus implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
