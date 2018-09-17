@@ -3,12 +3,13 @@ package com.juanarroyes.apichat.model;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
 @Table(name= "refresh_token")
 @EntityListeners(AuditingEntityListener.class)
-public class RefreshToken {
+public class RefreshToken implements Serializable{
 
     @Id
     private String token;
