@@ -23,6 +23,7 @@ public class ContactList implements Serializable{
     @Column(name = "contact_user_id")
     private Long contactUserId;
 
+    @Column(columnDefinition = "int default 0")
     private int status;
 
     @CreationTimestamp
