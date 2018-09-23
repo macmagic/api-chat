@@ -20,20 +20,20 @@ public class ContactListServiceImpl {
         this.contactListRepository = contactListRepository;
     }
 
-    @Transactional
+   // @Transactional
     public boolean createRelationship(User userRequest, User userRequired) {
         try {
             ContactList result = null;
 
             ContactList contact = new ContactList();
-            contact.setUserId(userRequest.getId());
-            contact.setContactUserId(userRequired.getId());
+            contact.setOwnerId(userRequest.getId());
+            contact.setContactId(userRequired.getId());
             contact.setStatus(ContactListStatus.CONTACT_IS_FRIEND);
             result = contactListRepository.save(contact);
 
             contact = new ContactList();
-            contact.setUserId(userRequired.getId());
-            contact.setContactUserId(userRequest.getId());
+            contact.setOwnerId(userRequired.getId());
+            contact.setContactId(userRequest.getId());
             result = contactListRepository.save(contact);
             return true;
         } catch(Exception ex) {

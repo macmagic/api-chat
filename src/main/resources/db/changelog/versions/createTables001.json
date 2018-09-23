@@ -29,12 +29,6 @@
                 },
                 {
                   "column": {
-                    "name": "salt",
-                    "type": "varchar(40)"
-                  }
-                },
-                {
-                  "column": {
                     "name": "status",
                     "type": "int"
                   }
@@ -42,13 +36,13 @@
                 {
                   "column": {
                     "name": "created",
-                    "type": "datetime"
+                    "type": "timestamp"
                   }
                 },
                 {
                   "column": {
                     "name": "updated",
-                    "type": "datetime"
+                    "type": "timestamp"
                   }
                 }
               ],
@@ -68,13 +62,101 @@
                 {
                   "column": {
                     "name": "name",
-                    "type": "varchar(100)"
+                    "type": "varchar(20)"
+                  }
+                }
+              ],
+              "tableName": "user_status"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "firstname",
+                    "type": "varchar(150)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "lastname",
+                    "type": "varchar(150)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "nickname",
+                    "type": "varchar(150)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "birthday",
+                    "type": "datetime"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "country",
+                    "type": "varchar(120)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "location",
+                    "type": "varchar(120)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "address",
+                    "type": "varchar(200)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "phone",
+                    "type": "varchar(20)"
                   }
                 },
                 {
                   "column": {
                     "name": "created",
-                    "type": "datetime"
+                    "type": "timestamp"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "updated",
+                    "type": "timestamp"
+                  }
+                }
+              ],
+              "tableName": "user_profile"
+            }
+          },
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "int"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "name",
+                    "type": "varchar(100)"
                   }
                 }
               ],
@@ -93,13 +175,13 @@
                 },
                 {
                   "column": {
-                    "name": "user_id",
+                    "name": "owner_id",
                     "type": "bigint"
                   }
                 },
                 {
                   "column": {
-                    "name": "contact_user_id",
+                    "name": "contact_id",
                     "type": "bigint"
                   }
                 },
@@ -150,7 +232,7 @@
                 {
                   "column": {
                     "name": "created",
-                    "type": "datetime"
+                    "type": "timestamp"
                   }
                 }
               ],
@@ -182,7 +264,7 @@
                 {
                   "column": {
                     "name": "created",
-                    "type": "datetime"
+                    "type": "timestamp"
                   }
                 }
               ],
@@ -232,7 +314,7 @@
                 {
                   "column": {
                     "name": "created",
-                    "type": "datetime"
+                    "type": "timestamp"
                   }
                 }
               ],

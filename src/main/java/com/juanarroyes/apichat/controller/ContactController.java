@@ -1,8 +1,11 @@
 package com.juanarroyes.apichat.controller;
 
+import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
+import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.ContactRequest;
 import com.juanarroyes.apichat.service.ContactListServiceImpl;
+import com.juanarroyes.apichat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +24,12 @@ public class ContactController {
 
     private ContactListServiceImpl contactListService;
 
+    private UserService userService;
+
     @Autowired
-    public ContactController(ContactListServiceImpl contactListService) {
+    public ContactController(ContactListServiceImpl contactListService, UserService userService) {
         this.contactListService = contactListService;
+        this.userService = userService;
     }
 
     @PostMapping()
@@ -32,7 +38,16 @@ public class ContactController {
         ContactList contactList = null;
 
         try {
+            User userRequest = null;
+            User userRequired = null;
+            try {
+                userRequest = userService.getUser(request.getUserRequestId());
+                userRequired = userService.getUser(request.getUserRequiredId());
+            } catch(UserNotFoundException ex) {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            }
 
+            contactListService.createRelationship(userRequest, userRequired);
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
         }
