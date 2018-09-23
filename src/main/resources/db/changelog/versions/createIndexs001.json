@@ -154,7 +154,7 @@
         "changes": [
           {
             "addForeignKeyConstraint": {
-              "baseColumnNames": "user_id",
+              "baseColumnNames": "owner_id",
               "baseTableName": "contact_list",
               "constraintName": "FK_USER_ID_IDX",
               "onDelete": "CASCADE",
@@ -165,7 +165,7 @@
           },
           {
             "addForeignKeyConstraint": {
-              "baseColumnNames": "contact_user_id",
+              "baseColumnNames": "contact_id",
               "baseTableName": "contact_list",
               "constraintName": "FK_CONTACT_USER_ID_IDX",
               "onDelete": "CASCADE",

@@ -1,0 +1,45 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "load-basic-data",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "loadData": {
+              "catalogName": "apichat",
+              "encoding": "UTF-8",
+              "file": "db/changelog/data/contact_list_status.csv",
+              "quotchar": "\"",
+              "schemaName": "apichat",
+              "separator": ";",
+              "tableName": "contact_list_status"
+            }
+          },
+          {
+            "loadData": {
+              "catalogName": "apichat",
+              "encoding": "UTF-8",
+              "file": "db/changelog/data/user_status.csv",
+              "quotchar": "\"",
+              "schemaName": "apichat",
+              "separator": ";",
+              "tableName": "user_status"
+            }
+          },
+          {
+            "loadData": {
+              "catalogName": "apichat",
+              "encoding": "UTF-8",
+              "file": "db/changelog/data/message_type.csv",
+              "quotchar": "\"",
+              "schemaName": "apichat",
+              "separator": ";",
+              "tableName": "message_type"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

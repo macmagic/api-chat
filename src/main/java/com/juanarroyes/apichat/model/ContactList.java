@@ -17,12 +17,13 @@ public class ContactList implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "owner_id")
+    private Long ownerId;
 
-    @Column(name = "contact_user_id")
-    private Long contactUserId;
+    @Column(name = "contact_id")
+    private Long contactId;
 
+    @Column(columnDefinition = "int default 0")
     private int status;
 
     @CreationTimestamp
@@ -42,20 +43,20 @@ public class ContactList implements Serializable{
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setOwnerId(Long userId) {
+        this.ownerId = ownerId;
     }
 
-    public Long getContactUserId() {
-        return contactUserId;
+    public Long getContactId() {
+        return contactId;
     }
 
-    public void setContactUserId(Long contactUserId) {
-        this.contactUserId = contactUserId;
+    public void setContactId(Long contactUserId) {
+        this.contactId = contactId;
     }
 
     public int getStatus() {
