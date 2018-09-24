@@ -1,5 +1,6 @@
 package com.juanarroyes.apichat.service;
 
+import com.juanarroyes.apichat.exception.ContactListNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.ContactListStatus;
 import com.juanarroyes.apichat.model.User;
@@ -18,6 +19,35 @@ public class ContactListServiceImpl {
     @Autowired
     public ContactListServiceImpl(ContactListRepository contactListRepository) {
         this.contactListRepository = contactListRepository;
+    }
+
+    public boolean createRequest(User userOwner, User userRequest) {
+        try {
+            ContactList request = new ContactList();
+            request.setOwnerId(userOwner.getId());
+            request.setContactId(userRequest.getId());
+            request.setStatus(ContactListStatus.CONTACT_IS_FRIEND);
+            contactListRepository.save(request);
+
+            request = new ContactList();
+            request.setOwnerId(userRequest.getId());
+            request.setContactId(userOwner.getId());
+            request.setStatus(ContactListStatus.CONTACT_IS_PENDING);
+            contactListRepository.save(request);
+            return true;
+        } catch(Exception ex) {
+            log.error("Unexpected error in method createRequest", ex);
+        }
+        return false;
+    }
+
+    public boolean answerRequest(User userOwner, String response) {
+
+        if(response.equals(ContactList.USER_ALLOW)) {
+            return allowRequest(userOwner);
+        }
+
+        return false;
     }
 
    // @Transactional
@@ -41,4 +71,21 @@ public class ContactListServiceImpl {
         }
         return false;
     }
+
+    private boolean allowRequest(User userOwner) {
+        ContactList contactList = contactListRepository.findByOwnerId(userOwner.getId());
+        contactList.setStatus(ContactListStatus.CONTACT_IS_FRIEND);
+        contactListRepository.save(contactList);
+        return true;
+    }
+
+    /*public boolean acceptRequest(User userOwner) throws ContactListNotFoundException{
+        ContactList contactList = contactListRepository.findByOwnerId(userOwner.getId());
+
+        if(contactList == null) {
+            throw new ContactListNotFoundException("Contact not found");
+        }
+
+
+    }*/
 }

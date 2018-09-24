@@ -12,9 +12,9 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class ContactListStatus implements Serializable {
 
-    public static final int CONTACT_IS_PENDING = 0;
-    public static final int CONTACT_IS_FRIEND = 1;
-    public static final int CONTACT_IS_BLOCKED = 2;
+    public static final int CONTACT_IS_PENDING = 1;
+    public static final int CONTACT_IS_FRIEND = 2;
+    public static final int CONTACT_IS_BLOCKED = 3;
 
     @Id
     private Integer id;

@@ -14,6 +14,10 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class User implements Serializable {
 
+    public static final int USER_ACTIVE = 1;
+    public static final int USER_BAN = 2;
+    public static final int USER_BLOCK = 3;
+
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column
@@ -23,8 +27,6 @@ public class User implements Serializable {
     private String email;
 
     private String password;
-
-    private String salt;
 
     private int status;
 
@@ -59,14 +61,6 @@ public class User implements Serializable {
 
     public String getPassword(){
         return password;
-    }
-
-    public void setSalt(String salt){
-        this.salt = salt;
-    }
-
-    public String getSalt(){
-        return salt;
     }
 
     public void setStatus(int status){
