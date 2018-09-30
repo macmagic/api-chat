@@ -1,0 +1,37 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "add-request-table",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "createTable": {
+              "catalogName": "apichat",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "bigint"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_make_request",
+                    "type": "bigint"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
