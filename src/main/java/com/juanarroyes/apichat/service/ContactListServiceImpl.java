@@ -45,7 +45,11 @@ public class ContactListServiceImpl {
 
         if(response.equals(ContactList.USER_ALLOW)) {
             return allowRequest(userOwner);
+        } else if (response.equals(ContactList.USER_DENY)) {
+
         }
+
+
 
         return false;
     }

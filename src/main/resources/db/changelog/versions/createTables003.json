@@ -11,7 +11,7 @@
               "columns": [
                 {
                   "column": {
-                    "name": "id",
+                    "name": "request_id",
                     "type": "bigint"
                   }
                 },
@@ -26,8 +26,15 @@
                     "name": "user_make_request",
                     "type": "bigint"
                   }
+                },
+                {
+                  "column": {
+                    "name": "created",
+                    "type": "timestamp"
+                  }
                 }
-              ]
+              ],
+              "tableName": "user_request"
             }
           }
         ]
