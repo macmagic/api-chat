@@ -31,9 +31,11 @@ public class RequestController {
     private TokenService tokenService;
 
     @Autowired
-    public RequestController(UserRequestService userRequestService, ContactListService contactListService) {
+    public RequestController(UserRequestService userRequestService, ContactListService contactListService, TokenService tokenService, UserService userService) {
         this.userRequestService = userRequestService;
         this.contactListService = contactListService;
+        this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     @PostMapping()

@@ -107,7 +107,7 @@ public class AuthController {
             }
 
             if(userService.existsByEmail(request.getEmail())){
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+                throw new HttpClientErrorException(HttpStatus.CONFLICT);
             }
 
             User result = userService.createUser(request.getEmail(), passwordEncoder.encode(request.getPassword()));
