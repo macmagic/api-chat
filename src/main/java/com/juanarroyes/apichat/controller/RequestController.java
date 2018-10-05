@@ -3,6 +3,7 @@ package com.juanarroyes.apichat.controller;
 import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserRequest;
+import com.juanarroyes.apichat.request.UserAnswerRequest;
 import com.juanarroyes.apichat.request.UserRequestRequest;
 import com.juanarroyes.apichat.service.*;
 import com.juanarroyes.apichat.util.HttpUtils;
@@ -76,4 +77,19 @@ public class RequestController {
         }
         return new ResponseEntity(httpStatus);
     }
+
+    public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest userAnswerRequest, HttpServletRequest request) {
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        try {
+
+        } catch (Exception e) {
+
+        }
+
+        return new ResponseEntity(httpStatus);
+    }
+
+
 }

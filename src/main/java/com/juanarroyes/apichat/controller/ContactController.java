@@ -1,11 +1,9 @@
 package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.UserNotFoundException;
-import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.request.ContactAnswerRequest;
+import com.juanarroyes.apichat.request.UserAnswerRequest;
 import com.juanarroyes.apichat.request.ContactRequest;
-import com.juanarroyes.apichat.security.UserPrincipal;
 import com.juanarroyes.apichat.service.ContactListServiceImpl;
 import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserService;
@@ -15,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -61,7 +57,7 @@ public class ContactController {
     }
 
     @PutMapping("/request")
-    public ResponseEntity answerRequest(@Valid @RequestBody ContactAnswerRequest body, HttpServletRequest request) {
+    public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest body, HttpServletRequest request) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
