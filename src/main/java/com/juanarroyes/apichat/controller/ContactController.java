@@ -49,8 +49,8 @@ public class ContactController {
             Long userId = tokenService.getUserIdByToken(token);
             User user = userService.getUser(userId);
             User userRequest = userService.getUser(bodyRequest.getUserRequestId());
-            boolean result = contactListService.createRequest(user, userRequest);
-            httpStatus = (result) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+            //boolean result = contactListService.createRequest(user, userRequest);
+            //httpStatus = (result) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
         } catch (UserNotFoundException ex) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception ex) {
@@ -69,7 +69,7 @@ public class ContactController {
             String token = HttpUtils.getAccessTokenFromRequest(request);
             Long userId = tokenService.getUserIdByToken(token);
             User userOwner = userService.getUser(userId);
-            contactListService.answerRequest(userOwner, body.getUserRequestResponse());
+            //contactListService.answerRequest(userOwner, body.getUserRequestResponse());
 
         } catch (UserNotFoundException ex) {
             httpStatus = HttpStatus.NOT_FOUND;

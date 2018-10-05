@@ -7,4 +7,6 @@ public interface ContactListRepository extends JpaRepository<ContactList, Long>{
 
     ContactList findByOwnerId(Long ownerId);
 
+    ContactList findByOwnerIdAndContactId(Long ownerId, Long contactId);
+
 }
