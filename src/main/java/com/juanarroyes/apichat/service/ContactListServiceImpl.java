@@ -36,13 +36,8 @@ public class ContactListServiceImpl implements ContactListService{
         return contactListRepository.save(contactList);
     }
 
-    public ContactList getContactByOwnerUserAndFriend(User userOwner, User userFriend) throws ContactListNotFoundException {
-        ContactList contactList = contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), userFriend.getId());
-
-        if(contactList == null) {
-            throw new ContactListNotFoundException("Contact not found");
-        }
-        return contactList;
+    public ContactList getContactByOwnerUserAndFriend(User userOwner, User userFriend) {
+        return contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), userFriend.getId());
     }
 
     public ContactList blockContact() {

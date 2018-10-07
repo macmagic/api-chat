@@ -4,12 +4,9 @@ import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.repository.UserRepository;
-import com.juanarroyes.apichat.util.PasswordAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

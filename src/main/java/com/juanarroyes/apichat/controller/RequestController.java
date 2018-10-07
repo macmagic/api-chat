@@ -1,5 +1,6 @@
 package com.juanarroyes.apichat.controller;
 
+import com.juanarroyes.apichat.exception.ContactListAlreadyExistsException;
 import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserRequest;
@@ -11,10 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +37,11 @@ public class RequestController {
         this.userService = userService;
     }
 
-    @PostMapping()
-    public ResponseEntity createRequest(@Valid @RequestBody UserRequestRequest userRequestRequest, HttpServletRequest request) {
+    @PostMapping
+    public ResponseEntity<UserRequest> createRequest(@Valid @RequestBody UserRequestRequest userRequestRequest, HttpServletRequest request) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserRequest result = null;
 
         try {
             Long userSourceId = tokenService.getUserIdByToken(HttpUtils.getAccessTokenFromRequest(request));
@@ -57,37 +57,43 @@ public class RequestController {
                 throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
             }
 
-            ContactList contactList = contactListService.getContactByOwnerUserAndFriend(userSource, userTarget);
-
-            if (contactList != null) {
-                log.info("Contact already exists!");
+            try {
+                result = userRequestService.createRequest(userTarget, userSource);
+            } catch(ContactListAlreadyExistsException e) {
+                log.error(e.getMessage());
                 throw new HttpClientErrorException(HttpStatus.CONFLICT);
             }
-
-            contactList = contactListService.createRelation(userSource, userTarget);
-
-            if(contactList == null) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
-            }
-
-            UserRequest userRequest = userRequestService.createRequest(userTarget, userSource);
             httpStatus = HttpStatus.CREATED;
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
         } catch(Exception e) {
             log.error("Unexpected exception in method createRequest", e);
         }
-        return new ResponseEntity(httpStatus);
+        return new ResponseEntity<>(result, httpStatus);
     }
 
+    @PutMapping
     public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest userAnswerRequest, HttpServletRequest request) {
-
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
 
         } catch (Exception e) {
 
+        }
+
+        return new ResponseEntity(httpStatus);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deleteRequest(@Valid @RequestBody Long requestId) {
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        try {
+
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
         }
 
         return new ResponseEntity(httpStatus);

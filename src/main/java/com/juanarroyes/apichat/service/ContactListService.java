@@ -8,7 +8,7 @@ public interface ContactListService {
 
     ContactList createRelation(User userOwner, User userFriend);
 
-    ContactList getContactByOwnerUserAndFriend(User userOwner, User userFrined) throws ContactListNotFoundException;
+    ContactList getContactByOwnerUserAndFriend(User userOwner, User userFriend);
 
     ContactList blockContact();
 

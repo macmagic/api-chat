@@ -23,7 +23,7 @@
                 },
                 {
                   "column": {
-                    "name": "user_make_request",
+                    "name": "user_request",
                     "type": "bigint"
                   }
                 },
