@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -20,6 +21,10 @@ public class ContactListServiceImpl implements ContactListService{
     @Autowired
     public ContactListServiceImpl(ContactListRepository contactListRepository) {
         this.contactListRepository = contactListRepository;
+    }
+
+    public List<ContactList> getContactsByUserId(Long userId) {
+        return contactListRepository.findAllByOwnerId(userId);
     }
 
     /**

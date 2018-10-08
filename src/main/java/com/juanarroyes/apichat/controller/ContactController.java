@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.UserNotFoundException;
+import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.UserAnswerRequest;
 import com.juanarroyes.apichat.request.ContactRequest;
@@ -13,91 +14,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/contact")
-public class ContactController {
+public class ContactController extends BaseController{
 
     private ContactListServiceImpl contactListService;
 
     private UserService userService;
 
-    private TokenService tokenService;
-
     @Autowired
     public ContactController(ContactListServiceImpl contactListService, UserService userService, TokenService tokenService) {
+        super(tokenService, userService);
         this.contactListService = contactListService;
         this.userService = userService;
         this.tokenService = tokenService;
     }
 
-    @PostMapping("/request")
-    public ResponseEntity contactRequest(@Valid @RequestBody ContactRequest bodyRequest, HttpServletRequest request) {
+    @GetMapping
+    public ResponseEntity<List<ContactList>> getContacts() {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        List<ContactList> contactList = null;
 
         try {
-            String token = HttpUtils.getAccessTokenFromRequest(request);
-            Long userId = tokenService.getUserIdByToken(token);
-            User user = userService.getUser(userId);
-            User userRequest = userService.getUser(bodyRequest.getUserRequestId());
-            //boolean result = contactListService.createRequest(user, userRequest);
-            //httpStatus = (result) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
-        } catch (UserNotFoundException ex) {
-            httpStatus = HttpStatus.NOT_FOUND;
-        } catch (Exception ex) {
-            log.error("Unexpected error in method contactRequest", ex);
-        }
+            User user = getUserFromToken();
+            contactList = contactListService.getContactsByUserId(user.getId());
 
-        return new ResponseEntity(httpStatus);
-    }
-
-    @PutMapping("/request")
-    public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest body, HttpServletRequest request) {
-
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        try {
-            String token = HttpUtils.getAccessTokenFromRequest(request);
-            Long userId = tokenService.getUserIdByToken(token);
-            User userOwner = userService.getUser(userId);
-            //contactListService.answerRequest(userOwner, body.getUserRequestResponse());
-
-        } catch (UserNotFoundException ex) {
-            httpStatus = HttpStatus.NOT_FOUND;
-        } catch (Exception ex) {
-
-        }
-
-        return new ResponseEntity(httpStatus);
-    }
-
-
-    /*@PostMapping()
-    public ResponseEntity<ContactList> createContactRelation(@Valid @RequestBody ContactRequest request) {
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        ContactList contactList = null;
-
-        try {
-            User userRequest = null;
-            User userRequired = null;
-            try {
-                userRequest = userService.getUser(request.getUserRequestId());
-                userRequired = userService.getUser(request.getUserRequiredId());
-            } catch(UserNotFoundException ex) {
+            if (contactList.isEmpty()) {
                 throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
             }
-
-            contactListService.createRelationship(userRequest, userRequired);
-        } catch (HttpClientErrorException ex) {
-            httpStatus = ex.getStatusCode();
+            httpStatus = HttpStatus.OK;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
+        } catch (Exception e) {
+            log.error("Unexpected error in method getContacts", e);
         }
-
         return new ResponseEntity<>(contactList, httpStatus);
-    }*/
+    }
 
+    @DeleteMapping
+    public ResponseEntity deleteContact() {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        return new ResponseEntity(httpStatus);
+    }
 }

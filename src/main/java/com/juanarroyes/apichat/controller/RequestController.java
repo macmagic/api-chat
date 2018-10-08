@@ -3,7 +3,6 @@ package com.juanarroyes.apichat.controller;
 import com.juanarroyes.apichat.exception.ContactListAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.exception.UserRequestNotFoundException;
-import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserRequest;
 import com.juanarroyes.apichat.request.UserAnswerRequest;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -29,15 +27,11 @@ public class RequestController extends BaseController {
 
     private UserRequestService userRequestService;
     private UserService userService;
-    private ContactListService contactListService;
-    //private TokenService tokenService;
 
     @Autowired
-    public RequestController(UserRequestService userRequestService, ContactListService contactListService, TokenService tokenService, UserService userService) {
+    public RequestController(UserRequestService userRequestService, TokenService tokenService, UserService userService) {
         super(tokenService, userService);
         this.userRequestService = userRequestService;
-        this.contactListService = contactListService;
-        //this.tokenService = tokenService;
         this.userService = userService;
     }
 
