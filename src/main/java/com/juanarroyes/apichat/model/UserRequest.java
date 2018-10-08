@@ -1,5 +1,6 @@
 package com.juanarroyes.apichat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "user_request")
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserRequest implements Serializable {
 
     @Id
