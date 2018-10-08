@@ -25,33 +25,39 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/request")
-public class RequestController {
+public class RequestController extends BaseController {
 
     private UserRequestService userRequestService;
     private UserService userService;
     private ContactListService contactListService;
-    private TokenService tokenService;
+    //private TokenService tokenService;
 
     @Autowired
     public RequestController(UserRequestService userRequestService, ContactListService contactListService, TokenService tokenService, UserService userService) {
+        super(tokenService, userService);
         this.userRequestService = userRequestService;
         this.contactListService = contactListService;
-        this.tokenService = tokenService;
+        //this.tokenService = tokenService;
         this.userService = userService;
     }
 
     @GetMapping
     public ResponseEntity<List<UserRequest>> getRequest(HttpServletRequest request) {
+
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         List<UserRequest> listRequest = null;
 
         try {
-            String accessToken = HttpUtils.getAccessTokenFromRequest(request);
-            User user = userService.getUser(tokenService.getUserIdByToken(accessToken));
+            User user = getUserFromToken();
+
+            if(user == null) {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            }
+
             listRequest = userRequestService.getAllRequestByUser(user);
             httpStatus = HttpStatus.OK;
-        } catch (UserNotFoundException e) {
-            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
         } catch (Exception e) {
             log.error("Unexpected error in method getRequest", e);
         }
