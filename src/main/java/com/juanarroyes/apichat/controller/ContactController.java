@@ -11,6 +11,7 @@ import com.juanarroyes.apichat.service.UserService;
 import com.juanarroyes.apichat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,9 +60,17 @@ public class ContactController extends BaseController{
         return new ResponseEntity<>(contactList, httpStatus);
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteContact() {
+    @DeleteMapping("/:contact_id")
+    public ResponseEntity deleteContact(@PathVariable("contact_id") Long contactId) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        try {
+            if(contactId == null) {
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            log.error("Unexpected error in method deleteContact", e);
+        }
 
         return new ResponseEntity(httpStatus);
     }
