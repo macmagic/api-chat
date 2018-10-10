@@ -12,6 +12,9 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class UserRequest implements Serializable {
 
+    public static final String REQUEST_ALLOW = "allow";
+    public static final String REQUEST_DENY = "deny";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")

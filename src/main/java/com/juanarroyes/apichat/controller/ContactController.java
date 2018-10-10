@@ -60,18 +60,30 @@ public class ContactController extends BaseController{
         return new ResponseEntity<>(contactList, httpStatus);
     }
 
-    @DeleteMapping("/:contact_id")
+    /*@PutMapping
+    public ResponseEntity<ContactList> updateContact()*/
+
+    @DeleteMapping("/{contact_id}")
     public ResponseEntity deleteContact(@PathVariable("contact_id") Long contactId) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            if(contactId == null) {
+            if (contactId == null) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
+            User user = getUserFromToken();
+            ContactList contactList = contactListService.getContactListByIdAndOwnerId(contactId, user.getId());
+
+            if (contactList == null) {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            }
+            contactListService.deleteRelationById(contactList.getContactId());
+            httpStatus = HttpStatus.OK;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
         } catch (Exception e) {
             log.error("Unexpected error in method deleteContact", e);
         }
-
         return new ResponseEntity(httpStatus);
     }
 }

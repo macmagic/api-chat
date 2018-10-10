@@ -59,14 +59,13 @@ public class RequestController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<UserRequest> createRequest(@Valid @RequestBody UserRequestRequest userRequestRequest, HttpServletRequest request) {
+    public ResponseEntity<UserRequest> createRequest(@Valid @RequestBody UserRequestRequest userRequestRequest) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         UserRequest result = null;
 
         try {
-            Long userSourceId = tokenService.getUserIdByToken(HttpUtils.getAccessTokenFromRequest(request));
-            User userSource = userService.getUser(userSourceId);
+            User userSource = getUserFromToken();
 
             if (userSource == null) {
                 throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -94,11 +93,11 @@ public class RequestController extends BaseController {
     }
 
     @PutMapping
-    public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest userAnswerRequest, HttpServletRequest request) {
+    public ResponseEntity answerRequest(@Valid @RequestBody UserAnswerRequest userAnswerRequest) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-
+            //UserRequest userRequest =
         } catch (Exception e) {
 
         }

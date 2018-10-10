@@ -11,4 +11,6 @@ public interface UserRequestRepository extends JpaRepository<UserRequest, Long> 
     UserRequest findByUserAndUserRequest(User user, User userRequest);
 
     List<UserRequest> findByUser(User user);
+
+    UserRequest findByIdAndUser(Long requestId, User user);
 }

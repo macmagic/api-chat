@@ -43,6 +43,16 @@ public class UserRequestService {
 
     /**
      *
+     * @param requestId
+     * @param user
+     * @return
+     */
+    public UserRequest getRequest(Long requestId, User user) {
+        return userRequestRepository.findByIdAndUser(requestId, user);
+    }
+
+    /**
+     *
      * @param userOwner
      * @param userRequest
      * @return

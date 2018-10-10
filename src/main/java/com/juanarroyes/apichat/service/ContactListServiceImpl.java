@@ -23,6 +23,10 @@ public class ContactListServiceImpl implements ContactListService{
         this.contactListRepository = contactListRepository;
     }
 
+    public ContactList getContactListByIdAndOwnerId(Long contactId, Long userId) {
+        return contactListRepository.findByIdAndOwnerId(contactId, userId);
+    }
+
     public List<ContactList> getContactsByUserId(Long userId) {
         return contactListRepository.findAllByOwnerId(userId);
     }
