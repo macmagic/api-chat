@@ -5,6 +5,7 @@ import com.juanarroyes.apichat.exception.ContactListAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserRequestAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserRequestNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
+import com.juanarroyes.apichat.model.ContactListStatus;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserRequest;
 import com.juanarroyes.apichat.repository.UserRequestRepository;
@@ -48,7 +49,7 @@ public class UserRequestService {
      * @return
      */
     public UserRequest getRequest(Long requestId, User user) {
-        return userRequestRepository.findByIdAndUser(requestId, user);
+        return userRequestRepository.findByRequestIdAndUser(requestId, user);
     }
 
     /**
@@ -96,6 +97,23 @@ public class UserRequestService {
         }
 
         return result.get();
+    }
+
+    public ContactList answerRequest(String answer, Long requestId, User user) throws UserRequestNotFoundException{
+
+        ContactList contactList =  null;
+        UserRequest userRequest = userRequestRepository.findByRequestIdAndUser(requestId, user);
+
+        if(userRequest == null) {
+            throw new UserRequestNotFoundException("Cannot find this request for this user");
+        }
+
+        if(answer.equals(UserRequest.REQUEST_ALLOW)) {
+            contactList = contactListService.createRelation(userRequest.getUser(), userRequest.getUserRequest());
+        }
+
+        userRequestRepository.delete(userRequest);
+        return contactList;
     }
 
     /**

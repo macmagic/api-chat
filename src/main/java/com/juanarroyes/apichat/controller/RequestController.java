@@ -97,11 +97,14 @@ public class RequestController extends BaseController {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            //UserRequest userRequest =
+            User user = getUserFromToken();
+            userRequestService.answerRequest(userAnswerRequest.getUserRequestResponse(), userAnswerRequest.getRequestId(), user);
+            httpStatus = HttpStatus.OK;
+        } catch (UserRequestNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
-
+            log.error("Unexpected error in method answerRequest", e);
         }
-
         return new ResponseEntity(httpStatus);
     }
 
