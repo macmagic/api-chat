@@ -49,8 +49,22 @@ public class ContactListServiceImpl implements ContactListService{
         return contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), userFriend.getId());
     }
 
-    public ContactList blockContact() {
-        return null;
+    public ContactList blockContact(Long contactId, Long userId) throws ContactListNotFoundException {
+        ContactList contactList = contactListRepository.findByIdAndOwnerId(contactId, userId);
+        if(contactList == null) {
+            throw new ContactListNotFoundException("Contact not found");
+        }
+        contactList.setStatus(ContactListStatus.CONTACT_IS_BLOCKED);
+        return contactListRepository.save(contactList);
+    }
+
+    public ContactList unblockContact(Long contactId, Long userId) throws ContactListNotFoundException {
+        ContactList contactList = contactListRepository.findByIdAndOwnerId(contactId, userId);
+        if(contactList == null) {
+            throw new ContactListNotFoundException("Contact not found");
+        }
+        contactList.setStatus(ContactListStatus.CONTACT_IS_FRIEND);
+        return contactListRepository.save(contactList);
     }
 
     public void deleteRelationById(Long contactId) throws ContactListNotFoundException {

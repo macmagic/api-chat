@@ -1,5 +1,6 @@
 package com.juanarroyes.apichat.controller;
 
+import com.juanarroyes.apichat.exception.ContactListNotFoundException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
@@ -60,8 +61,66 @@ public class ContactController extends BaseController{
         return new ResponseEntity<>(contactList, httpStatus);
     }
 
-    /*@PutMapping
-    public ResponseEntity<ContactList> updateContact()*/
+    @GetMapping("/{contact_id}")
+    public ResponseEntity<ContactList> getContact(@PathVariable("contact_id") Long contactId) {
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ContactList contactList = null;
+
+        try {
+            User user = getUserFromToken();
+            contactList = contactListService.getContactListByIdAndOwnerId(contactId, user.getId());
+
+            if(contactList == null) {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            }
+            httpStatus = HttpStatus.OK;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
+        } catch (Exception e) {
+            log.error("Unexpected error in method getContact", e);
+        }
+        return new ResponseEntity<>(contactList, httpStatus);
+    }
+
+    @PutMapping("/block")
+    public ResponseEntity<ContactList> blockContact(@Valid @RequestBody Long contactId)
+    {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ContactList contactList = null;
+
+        try {
+            User user = getUserFromToken();
+            contactList = contactListService.blockContact(contactId, user.getId());
+            httpStatus = HttpStatus.OK;
+        } catch (ContactListNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
+        } catch (Exception e) {
+            log.error("Unexpected error in method blockContact", e);
+        }
+        return new ResponseEntity<>(contactList, httpStatus);
+    }
+
+    @PutMapping("/unblock")
+    public ResponseEntity<ContactList> unblockContact(@Valid @RequestBody Long contactId) {
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ContactList contactList = null;
+
+        try {
+            User user = getUserFromToken();
+            contactList = contactListService.unblockContact(contactId, user.getId());
+        } catch (ContactListNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (HttpClientErrorException e) {
+            httpStatus = e.getStatusCode();
+        } catch (Exception e) {
+            log.error("Unexpected error in method unblockContact", e);
+        }
+        return new ResponseEntity<>(contactList, httpStatus);
+    }
 
     @DeleteMapping("/{contact_id}")
     public ResponseEntity deleteContact(@PathVariable("contact_id") Long contactId) {

@@ -10,7 +10,7 @@ public interface ContactListService {
 
     ContactList getContactByOwnerUserAndFriend(User userOwner, User userFriend);
 
-    ContactList blockContact();
+    ContactList blockContact(Long contactId, Long userId) throws ContactListNotFoundException;
 
     void deleteRelationById(Long contactId) throws ContactListNotFoundException;
 
