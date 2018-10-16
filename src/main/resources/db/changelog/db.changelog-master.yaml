@@ -11,3 +11,5 @@ databaseChangeLog:
         file: db/changelog/versions/createTables003.json
     - include:
         file: db/changelog/versions/createIndexs002.json
+    - include:
+        file: db/changelog/versions/alterTables001.json

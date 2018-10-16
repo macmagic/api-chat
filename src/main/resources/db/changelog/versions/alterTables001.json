@@ -1,0 +1,37 @@
+{
+  "databaseChangeLog" : [
+    {
+      "changeSet": {
+        "id" : "modify-message-table",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "renameColumn" : {
+              "catalogName" : "apichat",
+              "columnDataType" : "bigint",
+              "newColumnName" : "to_user_id",
+              "oldColumnName" : "to",
+              "schemaName" : "apichat",
+              "tableName" : "message"
+            }
+          },
+          {
+            "addColumn" : {
+              "catalogName" : "apichat",
+              "columns" : [
+                {
+                  "column" : {
+                    "name" : "to_room_id",
+                    "type" : "bigint",
+                    "afterColumn" : "to_user_id"
+                  }
+                }
+              ],
+              "tableName" : "message"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
