@@ -36,19 +36,18 @@ public class RequestController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserRequest>> getRequest(HttpServletRequest request) {
+    public ResponseEntity<List<UserRequest>> getRequest() {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         List<UserRequest> listRequest = null;
 
         try {
             User user = getUserFromToken();
+            listRequest = userRequestService.getAllRequestByUser(user);
 
-            if(user == null) {
+            if(listRequest.isEmpty()) {
                 throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
             }
-
-            listRequest = userRequestService.getAllRequestByUser(user);
             httpStatus = HttpStatus.OK;
         } catch (HttpClientErrorException e) {
             httpStatus = e.getStatusCode();
@@ -72,18 +71,13 @@ public class RequestController extends BaseController {
             }
 
             User userTarget = userService.getUser(userRequestRequest.getUserId());
-
-            if (userTarget == null) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-            }
-
-            try {
-                result = userRequestService.createRequest(userTarget, userSource);
-            } catch(ContactListAlreadyExistsException e) {
-                log.error(e.getMessage());
-                throw new HttpClientErrorException(HttpStatus.CONFLICT);
-            }
+            result = userRequestService.createRequest(userTarget, userSource);
             httpStatus = HttpStatus.CREATED;
+        } catch (UserNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (ContactListAlreadyExistsException e) {
+            log.error("Conflict detected" + e.getMessage(), e);
+            httpStatus  = HttpStatus.CONFLICT;
         } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
         } catch(Exception e) {

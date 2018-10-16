@@ -1,24 +1,19 @@
 package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.ContactListNotFoundException;
-import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
 import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.request.UserAnswerRequest;
-import com.juanarroyes.apichat.request.ContactRequest;
-import com.juanarroyes.apichat.service.ContactListServiceImpl;
+import com.juanarroyes.apichat.request.ContactBlockRequest;
+import com.juanarroyes.apichat.service.ContactListService;
 import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserService;
-import com.juanarroyes.apichat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,15 +22,12 @@ import java.util.List;
 @RequestMapping("/contact")
 public class ContactController extends BaseController{
 
-    private ContactListServiceImpl contactListService;
-
-    private UserService userService;
+    private ContactListService contactListService;
 
     @Autowired
-    public ContactController(ContactListServiceImpl contactListService, UserService userService, TokenService tokenService) {
+    public ContactController(ContactListService contactListService, UserService userService, TokenService tokenService) {
         super(tokenService, userService);
         this.contactListService = contactListService;
-        this.userService = userService;
         this.tokenService = tokenService;
     }
 
@@ -84,14 +76,14 @@ public class ContactController extends BaseController{
     }
 
     @PutMapping("/block")
-    public ResponseEntity<ContactList> blockContact(@Valid @RequestBody Long contactId)
+    public ResponseEntity<ContactList> blockContact(@Valid @RequestBody ContactBlockRequest request)
     {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ContactList contactList = null;
 
         try {
             User user = getUserFromToken();
-            contactList = contactListService.blockContact(contactId, user.getId());
+            contactList = contactListService.blockContact(request.getContactId(), user.getId());
             httpStatus = HttpStatus.OK;
         } catch (ContactListNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
@@ -104,14 +96,15 @@ public class ContactController extends BaseController{
     }
 
     @PutMapping("/unblock")
-    public ResponseEntity<ContactList> unblockContact(@Valid @RequestBody Long contactId) {
+    public ResponseEntity<ContactList> unblockContact(@Valid @RequestBody ContactBlockRequest request) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ContactList contactList = null;
 
         try {
             User user = getUserFromToken();
-            contactList = contactListService.unblockContact(contactId, user.getId());
+            contactList = contactListService.unblockContact(request.getContactId(), user.getId());
+            httpStatus = HttpStatus.OK;
         } catch (ContactListNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (HttpClientErrorException e) {
