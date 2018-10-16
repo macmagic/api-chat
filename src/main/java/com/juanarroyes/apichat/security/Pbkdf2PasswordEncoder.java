@@ -38,8 +38,6 @@ public class Pbkdf2PasswordEncoder implements PasswordEncoder {
         this.random = new SecureRandom();
     }
 
-
-
     @Override
     public String encode(CharSequence rawPassword) {
         char[] password = rawPassword.toString().toCharArray();

@@ -13,6 +13,9 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class ContactList implements Serializable{
 
+    public final static String USER_ALLOW = "allow";
+    public final static String USER_DENY = "deny";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,7 +50,7 @@ public class ContactList implements Serializable{
         return ownerId;
     }
 
-    public void setOwnerId(Long userId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -55,7 +58,7 @@ public class ContactList implements Serializable{
         return contactId;
     }
 
-    public void setContactId(Long contactUserId) {
+    public void setContactId(Long contactId) {
         this.contactId = contactId;
     }
 

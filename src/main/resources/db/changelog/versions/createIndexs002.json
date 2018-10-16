@@ -1,0 +1,31 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "add-primary-key",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "request_id",
+              "constraintName": "PK_REQUEST_ID",
+              "schemaName": "apichat",
+              "tableName": "user_request"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "request_id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "user_request"
+            }
+          },
+        ]
+      }
+    }
+  ]
+}
