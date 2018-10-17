@@ -5,28 +5,27 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
-public class RoomUserKey implements Serializable {
+public class ChatParticipantKey implements Serializable {
 
-    @Column(name = "room_id")
-    private Long roomId;
+    @Column(name = "chat_id")
+    private Long chatId;
 
     @Column(name = "user_id")
     private Long userId;
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getChatId() {
+        return chatId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId() {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 }

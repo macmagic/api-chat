@@ -16,13 +16,11 @@ public class Message implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long from;
+    @Column(name = "author_id")
+    private Long authorId;
 
-    @Column(name = "to_user_id")
-    private Long toUserId;
-
-    @Column(name = "to_room_id")
-    private Long toRoomId;
+    @Column(name = "chat_id")
+    private Long chatId;
 
     @Column(name = "message_text")
     private String messageText;
@@ -46,28 +44,20 @@ public class Message implements Serializable {
         this.id = id;
     }
 
-    public Long getFrom() {
-        return from;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setFrom(Long from) {
-        this.from = from;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
-    public Long getToUserId() {
-        return toUserId;
+    public Long getChatId() {
+        return chatId;
     }
 
-    public void setToUserId(Long toUserId) {
-        this.toUserId = toUserId;
-    }
-
-    public Long getToRoomId() {
-        return toRoomId;
-    }
-
-    public void setToRoomId(Long toRoomId) {
-        this.toRoomId = toRoomId;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public String getMessageText() {
