@@ -18,7 +18,11 @@ public class Message implements Serializable {
 
     private Long from;
 
-    private Long to;
+    @Column(name = "to_user_id")
+    private Long toUserId;
+
+    @Column(name = "to_room_id")
+    private Long toRoomId;
 
     @Column(name = "message_text")
     private String messageText;
@@ -50,12 +54,20 @@ public class Message implements Serializable {
         this.from = from;
     }
 
-    public Long getTo() {
-        return to;
+    public Long getToUserId() {
+        return toUserId;
     }
 
-    public void setTo(Long to) {
-        this.to = to;
+    public void setToUserId(Long toUserId) {
+        this.toUserId = toUserId;
+    }
+
+    public Long getToRoomId() {
+        return toRoomId;
+    }
+
+    public void setToRoomId(Long toRoomId) {
+        this.toRoomId = toRoomId;
     }
 
     public String getMessageText() {
