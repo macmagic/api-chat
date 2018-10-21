@@ -28,6 +28,14 @@ public class ChatParticipant implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
 
+    public ChatParticipantKey getId() {
+        return id;
+    }
+
+    public void setId(ChatParticipantKey id) {
+        this.id = id;
+    }
+
     public boolean isAdmin() {
         return isAdmin;
     }
