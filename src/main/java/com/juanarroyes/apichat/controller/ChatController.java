@@ -1,6 +1,8 @@
 package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.ChatUserIsTheSameException;
+import com.juanarroyes.apichat.exception.ContactListNotFoundException;
+import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.CreateChatRequest;
@@ -47,8 +49,11 @@ public class ChatController extends BaseController {
             chat = chatService.createPrivateChat(user, request.getUserId());
             httpStatus = HttpStatus.CREATED;
         } catch (ChatUserIsTheSameException e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             httpStatus = HttpStatus.CONFLICT;
+        } catch (UserNotFoundException | ContactListNotFoundException e) {
+            log.info(e.getMessage());
+            httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method createPrivateChat", e);
         }

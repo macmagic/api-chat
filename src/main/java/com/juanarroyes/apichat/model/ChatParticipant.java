@@ -20,13 +20,19 @@ public class ChatParticipant implements Serializable {
     private boolean isAdmin;
 
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
     @UpdateTimestamp
+    @Column(insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+
+    @JoinColumns({
+            @JoinColumn(name = "chat_id", referencedColumnName = "id"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
 
     public ChatParticipantKey getId() {
         return id;

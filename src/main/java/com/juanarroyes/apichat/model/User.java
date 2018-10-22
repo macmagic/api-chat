@@ -33,11 +33,12 @@ public class User implements Serializable {
     private int status;
 
     @CreationTimestamp
-    @Column(nullable =  false)
+    @Column(nullable =  false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
     @UpdateTimestamp
+    @Column(insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
 
