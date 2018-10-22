@@ -1,5 +1,6 @@
 package com.juanarroyes.apichat.controller;
 
+import com.juanarroyes.apichat.exception.ChatUserIsTheSameException;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.CreateChatRequest;
@@ -38,13 +39,19 @@ public class ChatController extends BaseController {
 
         try {
             User user = getUserFromToken();
+
+            if (user.getId().equals(request.getUserId())) {
+                throw new ChatUserIsTheSameException("User and user friend its the same");
+            }
+
             chat = chatService.createPrivateChat(user, request.getUserId());
             httpStatus = HttpStatus.CREATED;
-        } catch(Exception e) {
+        } catch (ChatUserIsTheSameException e) {
+            log.error(e.getMessage(), e);
+            httpStatus = HttpStatus.CONFLICT;
+        } catch (Exception e) {
             log.error("Unexpected error in method createPrivateChat", e);
         }
         return new ResponseEntity<>(chat, httpStatus);
     }
-
-
 }

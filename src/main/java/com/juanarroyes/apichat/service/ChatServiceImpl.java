@@ -36,6 +36,7 @@ public class ChatServiceImpl {
         Chat newChat = new Chat();
         newChat.setIsRoom(false);
         newChat.setSessionId(generateSessionId());
+        newChat.setPrivate(true);
         Chat result = chatRepository.save(newChat);
         chatParticipantService.addParticipantOnChat(result.getId(), user.getId());
         chatParticipantService.addParticipantOnChat(result.getId(), userId);

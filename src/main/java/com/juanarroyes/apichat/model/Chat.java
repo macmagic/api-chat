@@ -21,6 +21,9 @@ public class Chat implements Serializable {
     @Column(name = "session_id")
     private String sessionId;
 
+    @Column(name = "is_private")
+    private boolean isPrivate;
+
     @Column(name = "is_room")
     private boolean isRoom;
 
@@ -50,6 +53,14 @@ public class Chat implements Serializable {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        this.isPrivate = aPrivate;
     }
 
     public boolean isRoom() {
