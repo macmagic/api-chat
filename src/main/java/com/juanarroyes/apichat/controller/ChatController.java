@@ -1,8 +1,6 @@
 package com.juanarroyes.apichat.controller;
 
-import com.juanarroyes.apichat.exception.ChatUserIsTheSameException;
-import com.juanarroyes.apichat.exception.ContactListNotFoundException;
-import com.juanarroyes.apichat.exception.UserNotFoundException;
+import com.juanarroyes.apichat.exception.*;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.CreateChatRequest;
@@ -26,11 +24,13 @@ import javax.validation.Valid;
 public class ChatController extends BaseController {
 
     private ChatServiceImpl chatService;
+    private UserService userService;
 
     @Autowired
     public ChatController(TokenService tokenService, UserService userService, ChatServiceImpl chatService) {
         super(tokenService, userService);
         this.chatService = chatService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -41,22 +41,30 @@ public class ChatController extends BaseController {
 
         try {
             User user = getUserFromToken();
+            User userFriend = userService.getUser(request.getUserId());
 
             if (user.getId().equals(request.getUserId())) {
                 throw new ChatUserIsTheSameException("User and user friend its the same");
             }
 
-            chat = chatService.createPrivateChat(user, request.getUserId());
-            httpStatus = HttpStatus.CREATED;
+            try {
+                chat = chatService.createPrivateChat(user, userFriend);
+                httpStatus = HttpStatus.CREATED;
+            } catch (ChatAlreadyExistsException e) {
+                chat = chatService.getPrivateChatByUserAndFriend(user, userFriend);
+                httpStatus = HttpStatus.OK;
+            }
+
         } catch (ChatUserIsTheSameException e) {
             log.error(e.getMessage());
             httpStatus = HttpStatus.CONFLICT;
-        } catch (UserNotFoundException | ContactListNotFoundException e) {
+        } catch (UserNotFoundException | ContactListNotFoundException | ChatNotFoundException e) {
             log.info(e.getMessage());
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method createPrivateChat", e);
         }
+
         return new ResponseEntity<>(chat, httpStatus);
     }
 }
