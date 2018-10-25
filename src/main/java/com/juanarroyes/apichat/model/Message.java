@@ -73,7 +73,7 @@ public class Message implements Serializable {
     }
 
     public void setMessageType(int messageType) {
-        this.messageText = messageText;
+        this.messageType = messageType;
     }
 
     public String getAttachUrl() {

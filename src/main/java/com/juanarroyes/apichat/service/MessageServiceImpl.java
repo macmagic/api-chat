@@ -35,4 +35,26 @@ public class MessageServiceImpl {
     public List<Message> getMessagesByChat(Chat chat) {
         return messageRepository.findByChatId(chat.getId());
     }
+
+    public Message sendMessage(User user, Chat chat, String messageText) {
+        return sendMessage(user, chat, messageText, 1);
+    }
+
+    public Message sendMessage(User user, Chat chat, String messageText, Integer messageType) {
+        return sendMessage(user, chat, messageText, messageType, null);
+    }
+
+    public Message sendMessage(User user, Chat chat, String messageText, Integer messageType, String attachUrl) {
+
+        Message message = new Message();
+        message.setAuthorId(user.getId());
+        message.setMessageText(messageText);
+        message.setChatId(chat.getId());
+        message.setMessageType(messageType);
+
+        if(attachUrl != null) {
+            message.setAttachUrl(attachUrl);
+        }
+        return messageRepository.save(message);
+    }
 }
