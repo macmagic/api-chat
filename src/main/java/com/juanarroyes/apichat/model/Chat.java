@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,25 +10,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name= "contact_list")
+@Table(name = "chat")
 @EntityListeners(AuditingEntityListener.class)
-public class ContactList implements Serializable{
-
-    public final static String USER_ALLOW = "allow";
-    public final static String USER_DENY = "deny";
+public class Chat implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
+    @Column(name = "session_id")
+    private String sessionId;
 
-    @Column(name = "contact_id")
-    private Long contactId;
+    @Column(name = "is_private")
+    private boolean isPrivate;
 
-    @Column(columnDefinition = "int default 0")
-    private int status;
+    @Column(name = "is_room")
+    private boolean isRoom;
+
+    @Column(name = "room_id")
+    private Long roomId;
 
     @CreationTimestamp
     @Column(nullable =  false, updatable = false)
@@ -47,28 +48,36 @@ public class ContactList implements Serializable{
         this.id = id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
-    public Long getContactId() {
-        return contactId;
+    public boolean isPrivate() {
+        return isPrivate;
     }
 
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
+    public void setPrivate(boolean aPrivate) {
+        this.isPrivate = aPrivate;
     }
 
-    public int getStatus() {
-        return status;
+    public boolean isRoom() {
+        return isRoom;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setIsRoom(boolean isRoom) {
+        this.isRoom = isRoom;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public Date getCreated() {

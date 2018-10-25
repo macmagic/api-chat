@@ -1,0 +1,109 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet" : {
+        "id" : "drop-old-table",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "dropTable" : {
+              "cascadeConstraints" : true,
+              "catalogName" : "apichat",
+              "tableName" : "room_user"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet" : {
+        "id" : "add-new-tables",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "createTable" : {
+              "catalogName" : "apichat",
+              "columns" : [
+                {
+                  "column" : {
+                    "name" : "id",
+                    "type" : "bigint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "session_id",
+                    "type" : "varchar(60)"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "is_room",
+                    "type" : "tinyint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "room_id",
+                    "type" : "bigint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "created",
+                    "type" : "timestamp"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "updated",
+                    "type" : "timestamp"
+                  }
+                }
+              ],
+              "tableName" : "chat"
+            }
+          },
+          {
+            "createTable" : {
+              "catalogName" : "apichat",
+              "columns" : [
+                {
+                  "column" : {
+                    "name" : "chat_id",
+                    "type" : "bigint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "user_id",
+                    "type" : "bigint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "is_admin",
+                    "type" : "tinyint"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "created",
+                    "type" : "timestamp"
+                  }
+                },
+                {
+                  "column" : {
+                    "name" : "updated",
+                    "type" : "timestamp"
+                  }
+                }
+              ],
+              "tableName" : "chat_participant"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

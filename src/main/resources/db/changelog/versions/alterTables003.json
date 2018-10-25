@@ -1,0 +1,27 @@
+{
+  "databaseChangeLog" : [
+    {
+      "changeSet" : {
+        "id" : "add-new-column-chat",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "addColumn" : {
+              "catalogName" : "apichat",
+              "columns" : [
+                {
+                  "column" : {
+                    "name" : "is_private",
+                    "type" : "tinyint",
+                    "afterColumn" : "is_room"
+                  }
+                }
+              ],
+              "tableName" : "chat"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

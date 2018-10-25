@@ -1,0 +1,122 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "add-primary-key-new-tables",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_CHAT_ID",
+              "schemaName": "apichat",
+              "tableName": "chat"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "chat"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add-constraints",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addUniqueConstraint": {
+              "catalogName": "apichat",
+              "columnNames": "session_id",
+              "constraintName": "UNIQUE_session_id",
+              "schemaName": "apichat",
+              "tableName": "chat"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "add-foreign-key-constraint",
+        "author": "jarroyes",
+        "changes": [
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "room_id",
+              "baseTableName": "chat",
+              "constraintName": "FK_CHAT_ROOM_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "room"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "chat_id",
+              "baseTableName": "chat_participant",
+              "constraintName": "FK_CHAT_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "chat"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "user_id",
+              "baseTableName": "chat_participant",
+              "constraintName": "FK_CHAT_USER_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "chat_id",
+              "baseTableName": "message",
+              "constraintName": "FK_MESSAGE_CHAT_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "chat"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "author_id",
+              "baseTableName": "message",
+              "constraintName": "FK_AUTHOR_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "message_type",
+              "baseTableName": "message",
+              "constraintName": "FK_MESSAGE_TYPE_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "message_type"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

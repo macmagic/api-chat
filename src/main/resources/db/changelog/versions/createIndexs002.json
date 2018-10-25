@@ -23,7 +23,7 @@
               "schemaName": "apichat",
               "tableName": "user_request"
             }
-          },
+          }
         ]
       }
     }
