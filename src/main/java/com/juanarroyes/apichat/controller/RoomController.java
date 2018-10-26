@@ -2,6 +2,7 @@ package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.RoomNotFoundException;
 import com.juanarroyes.apichat.model.Room;
+import com.juanarroyes.apichat.request.CreateRoomRequest;
 import com.juanarroyes.apichat.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,11 @@ public class RoomController {
     }
 
     @PostMapping()
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
+    public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         Room result = null;
         try {
-            result = roomService.createRoom(room);
+            //result = roomService.createRoom();
             httpStatus = HttpStatus.CREATED;
         } catch(Exception ex) {
             log.error("Unexpected error in method createRoom", ex);

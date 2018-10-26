@@ -7,20 +7,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
-public class RoomServiceImpl implements RoomService {
+public class RoomServiceImpl {
 
     private RoomRepository roomRepository;
+    private ChatParticipantServiceImpl chatParticipantService;
 
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository) {
+    public RoomServiceImpl(RoomRepository roomRepository, ChatParticipantServiceImpl chatParticipantService) {
         this.roomRepository = roomRepository;
+        this.chatParticipantService = chatParticipantService;
     }
 
-    public Room createRoom(Room room) {
+    public Room createRoom(String roomName, List<Long> users) {
+        Room room = new Room();
         return roomRepository.save(room);
     }
 
