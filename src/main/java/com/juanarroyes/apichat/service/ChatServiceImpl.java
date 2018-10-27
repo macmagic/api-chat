@@ -1,13 +1,7 @@
 package com.juanarroyes.apichat.service;
 
-import com.juanarroyes.apichat.exception.ChatAlreadyExistsException;
-import com.juanarroyes.apichat.exception.ChatNotFoundException;
-import com.juanarroyes.apichat.exception.ContactListNotFoundException;
-import com.juanarroyes.apichat.exception.UserNotFoundException;
-import com.juanarroyes.apichat.model.Chat;
-import com.juanarroyes.apichat.model.ChatParticipant;
-import com.juanarroyes.apichat.model.ContactList;
-import com.juanarroyes.apichat.model.User;
+import com.juanarroyes.apichat.exception.*;
+import com.juanarroyes.apichat.model.*;
 import com.juanarroyes.apichat.repository.ChatRepository;
 import com.juanarroyes.apichat.util.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +63,26 @@ public class ChatServiceImpl {
 
     /**
      *
+     * @param room
+     * @param users
+     * @return
+     */
+    public Chat createRoomChat(Room room, List<Long> users) {
+        Chat chat = new Chat();
+        chat.setSessionId(generateSessionId());
+        chat.setIsRoom(true);
+        chat.setPrivate(false);
+        chat.setRoomId(room.getId());
+        chat = chatRepository.save(chat);
+
+        if(users != null) {
+            chatParticipantService.addParticipantsOnChat(chat, users);
+        }
+        return chat;
+    }
+
+    /**
+     *
      * @param chatId
      * @return
      * @throws ChatNotFoundException
@@ -77,6 +91,14 @@ public class ChatServiceImpl {
         Optional<Chat> result = chatRepository.findById(chatId);
         if(!result.isPresent()) {
             throw new ChatNotFoundException("Cannot find chat: " + chatId);
+        }
+        return result.get();
+    }
+
+    public Chat getChatByRoom(Room room) throws ChatNotFoundException {
+        Optional<Chat> result = chatRepository.findByRoomId(room.getId());
+        if(!result.isPresent()) {
+            throw new ChatNotFoundException("Cannot find chat for this room");
         }
         return result.get();
     }
