@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class ChatParticipantServiceImpl {
+public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     private ChatParticipantRepository chatParticipantRepository;
 
@@ -105,9 +105,19 @@ public class ChatParticipantServiceImpl {
      * @param chat
      * @param users
      */
-    public void deleteParticipantsOnChat(Chat chat, List<Long> users) {
+    public void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException{
+
         if(users == null) {
             return;
+        }
+
+        ChatParticipantKey participantId = new ChatParticipantKey(chat.getId(), user.getId());
+        Optional<ChatParticipant> result = chatParticipantRepository.findById(participantId);
+
+        if(!result.isPresent()) {
+            throw new ChatParticipantNotFoundException("Cannot find participant relation for user " + user.getId());
+        } else if(!result.get().isAdmin()) {
+            throw new UserNotAllowedException("User cannot make this action on this room");
         }
 
         for(Long userId : users) {

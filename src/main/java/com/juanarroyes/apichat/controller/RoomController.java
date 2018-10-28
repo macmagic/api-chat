@@ -1,7 +1,9 @@
 package com.juanarroyes.apichat.controller;
 
 import com.juanarroyes.apichat.exception.ChatNotFoundException;
+import com.juanarroyes.apichat.exception.ChatParticipantNotFoundException;
 import com.juanarroyes.apichat.exception.RoomNotFoundException;
+import com.juanarroyes.apichat.exception.UserNotAllowedException;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.Room;
 import com.juanarroyes.apichat.model.User;
@@ -73,14 +75,20 @@ public class RoomController extends BaseController{
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-
+            User user = getUserFromToken();
+            Room room = roomService.getRoomById(request.getRoomId());
+            Chat chat = chatService.getChatByRoom(room);
+            chatParticipantService.deleteParticipantsOnChat(chat, request.getUsers(), user);
+            httpStatus = HttpStatus.RESET_CONTENT;
+        } catch (RoomNotFoundException | ChatParticipantNotFoundException | ChatNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (UserNotAllowedException e) {
+            httpStatus = HttpStatus.UNAUTHORIZED;
         } catch (Exception e) {
             log.error("Unexpected error in method deleteUsersInRoom", e);
         }
-
         return new ResponseEntity(httpStatus);
     }
-
 
     @GetMapping("/id/{room_id}")
     public ResponseEntity<Room> getRoomById(@PathVariable("room_id") Long id) {
@@ -99,7 +107,6 @@ public class RoomController extends BaseController{
         } catch(Exception ex) {
             log.error("Unexpected error in method getRoomById", ex);
         }
-
         return new ResponseEntity<>(room, httpStatus);
     }
 
@@ -116,7 +123,6 @@ public class RoomController extends BaseController{
         } catch(Exception e) {
             log.error("Unexpected error in method leaveARoom", e);
         }
-
         return new ResponseEntity(httpStatus);
     }
 }
