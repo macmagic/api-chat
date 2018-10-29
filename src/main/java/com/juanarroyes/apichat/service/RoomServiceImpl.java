@@ -16,25 +16,27 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class RoomServiceImpl {
+public class RoomServiceImpl implements RoomService {
 
     private RoomRepository roomRepository;
-    private ChatParticipantServiceImpl chatParticipantService;
-    private ChatServiceImpl chatService;
-
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, ChatParticipantServiceImpl chatParticipantService, ChatServiceImpl chatService) {
+    public RoomServiceImpl(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
-        this.chatParticipantService = chatParticipantService;
-        this.chatService = chatService;
     }
 
+    @Override
+    public List<Room> getRoomsByUser(User user) {
+        return roomRepository.findAllRoomsByUser(user.getId());
+    }
+
+    @Override
     public Room createRoom(String roomName) {
         Room room = new Room();
         room.setRoomName(roomName);
         return roomRepository.save(room);
     }
 
+    @Override
     public Room getRoomById(Long roomId) throws RoomNotFoundException{
         Optional<Room> result = roomRepository.findById(roomId);
 
