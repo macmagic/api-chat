@@ -8,35 +8,37 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 
 @Slf4j
 @Service
-public class ChatServiceImpl {
+public class ChatServiceImpl implements ChatService {
 
-    private final static int SESSION_LENGTH = 40;
+    private static final int SESSION_LENGTH = 40;
 
     private ChatRepository chatRepository;
     private ChatParticipantServiceImpl chatParticipantService;
     private ContactListService contactListService;
-    private UserService userService;
 
-    public ChatServiceImpl(ChatRepository chatRepository, ChatParticipantServiceImpl chatParticipantService, ContactListService contactListService, UserService userService) {
+    public ChatServiceImpl(ChatRepository chatRepository, ChatParticipantServiceImpl chatParticipantService, ContactListService contactListService) {
         this.chatRepository = chatRepository;
         this.chatParticipantService = chatParticipantService;
         this.contactListService = contactListService;
-        this.userService = userService;
     }
 
     /**
+     * Create private chat with two users
      *
-     * @param user
-     * @param userFriend
-     * @return
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param user User with create a private chat
+     * @param userFriend User friend who user is creating the chat
+     * @return Chat entity with information of chat data
      */
     @Transactional
-    public Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException, UserNotFoundException, ChatAlreadyExistsException{
+    @Override
+    public Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException {
 
         ContactList contactList = contactListService.getContactByOwnerUserAndFriend(userFriend, user);
         if(contactList == null) {
@@ -62,11 +64,16 @@ public class ChatServiceImpl {
     }
 
     /**
+     * Create a chat room with list of users
      *
-     * @param room
-     * @param users
-     * @return
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param room Entity with room data
+     * @param users List of users to add in the room
+     * @return Chat entity with data
      */
+    @Override
     public Chat createRoomChat(Room room, List<Long> users) {
         Chat chat = new Chat();
         chat.setSessionId(generateSessionId());
@@ -82,11 +89,16 @@ public class ChatServiceImpl {
     }
 
     /**
+     * Get chat by chat id
      *
-     * @param chatId
-     * @return
-     * @throws ChatNotFoundException
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chatId Chat id to get the info
+     * @return Chat entity with data
+     * @throws ChatNotFoundException Exception if chat not found
      */
+    @Override
     public Chat getChatById(Long chatId) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findById(chatId);
         if(!result.isPresent()) {
@@ -95,6 +107,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
+    @Override
     public Chat getChatByRoom(Room room) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findByRoomId(room.getId());
         if(!result.isPresent()) {
@@ -104,12 +117,14 @@ public class ChatServiceImpl {
     }
 
     /**
+     * Get private chat data with user and user friend data
      *
-     * @param user
-     * @param userFriend
-     * @return
-     * @throws ChatNotFoundException
+     * @param user User to request the chat
+     * @param userFriend Friend with is in on chat instance
+     * @return Chat entity with data
+     * @throws ChatNotFoundException Exception if chat is not found
      */
+    @Override
     public Chat getPrivateChatByUserAndFriend(User user, User userFriend) throws ChatNotFoundException {
         List<Long> users = Arrays.asList(user.getId(), userFriend.getId());
         Optional<Chat> result = chatRepository.findByPrivateChatByUsers(users);
@@ -119,10 +134,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
-    private String generateSessionId() {
-        return Utils.generateRandomString(SESSION_LENGTH);
-    }
-
+    @Override
     public Chat getChatByIdAndUser(Long chatId, User user) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findByChatAndUser(chatId, user.getId());
 
@@ -132,4 +144,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
+    private String generateSessionId() {
+        return Utils.generateRandomString(SESSION_LENGTH);
+    }
 }

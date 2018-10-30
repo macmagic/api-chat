@@ -108,16 +108,15 @@ public class RequestController extends BaseController {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
+            User user = getUserFromToken();
             UserRequest userRequest = userRequestService.getRequest(requestId);
-            String token = HttpUtils.getAccessTokenFromRequest(request);
-            User user = userService.getUser(tokenService.getUserIdByToken(token));
 
             if(!user.getId().equals(userRequest.getUser().getId())) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
             userRequestService.deleteRequest(userRequest);
             httpStatus = HttpStatus.OK;
-        } catch (UserNotFoundException | UserRequestNotFoundException e) {
+        } catch (UserRequestNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (HttpClientErrorException e) {
             httpStatus = e.getStatusCode();

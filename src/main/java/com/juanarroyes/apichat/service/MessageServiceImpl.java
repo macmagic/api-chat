@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MessageServiceImpl {
+public class MessageServiceImpl implements MessageService{
 
     public MessageRepository messageRepository;
 
@@ -32,6 +32,7 @@ public class MessageServiceImpl {
      *
      * @TODO Pagination messages we need on this place!
      */
+    @Override
     public List<Message> getMessagesByChat(Chat chat) {
         return messageRepository.findByChatId(chat.getId());
     }
@@ -40,10 +41,12 @@ public class MessageServiceImpl {
         return sendMessage(user, chat, messageText, 1);
     }
 
+    @Override
     public Message sendMessage(User user, Chat chat, String messageText, Integer messageType) {
         return sendMessage(user, chat, messageText, messageType, null);
     }
 
+    @Override
     public Message sendMessage(User user, Chat chat, String messageText, Integer messageType, String attachUrl) {
 
         Message message = new Message();

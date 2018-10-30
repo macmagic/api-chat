@@ -4,6 +4,7 @@ import com.juanarroyes.apichat.dto.UserObj;
 import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.User;
+import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
-public class UserController {
+public class UserController extends BaseController {
 
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(TokenService tokenService, UserService userService){
+        super(tokenService, userService);
         this.userService = userService;
     }
 
@@ -85,7 +87,7 @@ public class UserController {
         List<User> usersFound = new ArrayList<>();
         try {
              usersFound = userService.getUsers();
-            if(usersFound.size() == 0){
+            if(usersFound.isEmpty()){
                 httpStatus = HttpStatus.NO_CONTENT;
             } else {
                 httpStatus = HttpStatus.OK;
