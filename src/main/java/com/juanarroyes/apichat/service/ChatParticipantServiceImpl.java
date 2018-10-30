@@ -1,6 +1,8 @@
 package com.juanarroyes.apichat.service;
 
 import com.juanarroyes.apichat.exception.ChatParticipantNotFoundException;
+import com.juanarroyes.apichat.exception.UserNotAllowedException;
+import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.ChatParticipant;
 import com.juanarroyes.apichat.model.ChatParticipantKey;
 import com.juanarroyes.apichat.model.User;
@@ -15,7 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class ChatParticipantServiceImpl {
+public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     private ChatParticipantRepository chatParticipantRepository;
 
@@ -28,6 +30,7 @@ public class ChatParticipantServiceImpl {
         return addParticipantOnChat(chatId, userId, false);
     }
 
+    @Override
     public ChatParticipant addParticipantOnChat(Long chatId, Long userId, boolean isAdmin) {
 
         ChatParticipant chatParticipant = new ChatParticipant();
@@ -39,8 +42,34 @@ public class ChatParticipantServiceImpl {
         return chatParticipantRepository.save(chatParticipant);
     }
 
-    public void addParticipantsOnChat(List<Long> users, Long chatId, User user) {
+    /**
+     *
+     * @param chat
+     * @param users
+     * @return
+     */
+    @Override
+    public void addParticipantsOnChat(Chat chat, List<Long> users) {
+        createParticipantsOnChat(chat.getId(), users);
+    }
 
+    /**
+     *
+     * @param chat
+     * @param users
+     * @param user
+     * @return
+     */
+    @Override
+    public void addParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException {
+
+        if(user != null) {
+            ChatParticipant chatParticipant = getParticipantInChat(user, chat.getId());
+            if(!chatParticipant.isAdmin()) {
+                throw new UserNotAllowedException("User is not admin to add participants on chat");
+            }
+        }
+        createParticipantsOnChat(chat.getId(), users);
     }
 
     /**
@@ -50,6 +79,7 @@ public class ChatParticipantServiceImpl {
      * @return
      * @throws ChatParticipantNotFoundException
      */
+    @Override
     public ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException {
         ChatParticipantKey idParticipant = new ChatParticipantKey();
         idParticipant.setChatId(chatId);
@@ -66,6 +96,78 @@ public class ChatParticipantServiceImpl {
         return result.get();
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException {
 
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        Optional<ChatParticipant> result = chatParticipantRepository.findById(id);
+        if(result.isPresent()) {
+            throw new ChatParticipantNotFoundException("Cannot find participant on this chat");
+        }
+
+        ChatParticipant participant = result.get();
+        participant.setAdmin(admin);
+        return chatParticipantRepository.save(participant);
+    }
+
+    /**
+     *
+     * @param chat
+     * @param users
+     */
+    @Override
+    public void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException{
+
+        if(users == null) {
+            return;
+        }
+
+        ChatParticipantKey participantId = new ChatParticipantKey(chat.getId(), user.getId());
+        Optional<ChatParticipant> result = chatParticipantRepository.findById(participantId);
+
+        if(!result.isPresent()) {
+            throw new ChatParticipantNotFoundException("Cannot find participant relation for user " + user.getId());
+        } else if(!result.get().isAdmin()) {
+            throw new UserNotAllowedException("User cannot make this action on this room");
+        }
+
+        for(Long userId : users) {
+            ChatParticipantKey id = new ChatParticipantKey();
+            id.setChatId(chat.getId());
+            id.setUserId(userId);
+            chatParticipantRepository.deleteById(id);
+        }
+    }
+
+    @Override
+    public void leaveUserFromChat(Chat chat, User user) {
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        chatParticipantRepository.deleteById(id);
+    }
+
+    /**
+     *
+     * @param chatId
+     * @param users
+     */
+    private void createParticipantsOnChat(Long chatId, List<Long> users) {
+        if(users == null) {
+            return;
+        }
+
+        for(Long userId : users) {
+            ChatParticipant participant = new ChatParticipant();
+            ChatParticipantKey key = new ChatParticipantKey();
+            key.setChatId(chatId);
+            key.setUserId(userId);
+            participant.setId(key);
+            participant.setAdmin(false);
+            chatParticipantRepository.save(participant);
+        }
+    }
 
 }

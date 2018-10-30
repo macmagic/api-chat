@@ -15,4 +15,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     @Query(value = "SELECT c.* FROM chat c INNER JOIN chat_participant cp ON cp.chat_id = c.id WHERE c.id = :chat_id AND cp.user_id = :user_id", nativeQuery = true)
     Optional<Chat> findByChatAndUser(@Param("chat_id") Long chatId, @Param("user_id") Long userId);
+
+    Optional<Chat> findByRoomId(Long roomId);
 }

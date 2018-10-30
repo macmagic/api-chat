@@ -13,6 +13,15 @@ public class ChatParticipantKey implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
+    public ChatParticipantKey() {
+
+    }
+
+    public ChatParticipantKey(Long chatId, Long userId) {
+        this.chatId = chatId;
+        this.userId = userId;
+    }
+
     public Long getChatId() {
         return chatId;
     }
