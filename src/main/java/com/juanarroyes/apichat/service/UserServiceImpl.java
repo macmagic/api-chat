@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public User getUser(Long id) throws UserNotFoundException {
 
         User user;
@@ -48,10 +49,12 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
     public List<User> getUsers(){
         return userRepository.findAll();
     }
 
+    @Override
     public User getUserByEmail(String email) throws UserNotFoundException {
 
         User user = userRepository.findByEmail(email);
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
     }

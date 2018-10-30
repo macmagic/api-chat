@@ -38,6 +38,7 @@ public class UserRequestServiceImpl implements UserRequestService {
      * @param user
      * @return
      */
+    @Override
     public List<UserRequest> getAllRequestByUser(User user) {
         return userRequestRepository.findByUser(user);
     }
@@ -48,6 +49,7 @@ public class UserRequestServiceImpl implements UserRequestService {
      * @param user
      * @return
      */
+    @Override
     public UserRequest getRequest(Long requestId, User user) {
         return userRequestRepository.findByRequestIdAndUser(requestId, user);
     }
@@ -60,6 +62,7 @@ public class UserRequestServiceImpl implements UserRequestService {
      * @throws ContactListAlreadyExistsException
      * @throws UserRequestAlreadyExistsException
      */
+    @Override
     @Transactional
     public UserRequest createRequest(User userOwner, User userRequest) throws ContactListAlreadyExistsException, UserRequestAlreadyExistsException {
         ContactList contactList = contactListService.getContactByOwnerUserAndFriend(userRequest, userOwner);
@@ -88,6 +91,7 @@ public class UserRequestServiceImpl implements UserRequestService {
      * @return
      * @throws UserRequestNotFoundException
      */
+    @Override
     public UserRequest getRequest(Long requestId) throws UserRequestNotFoundException {
 
         Optional<UserRequest> result = userRequestRepository.findById(requestId);
@@ -99,6 +103,7 @@ public class UserRequestServiceImpl implements UserRequestService {
         return result.get();
     }
 
+    @Override
     public ContactList answerRequest(String answer, Long requestId, User user) throws UserRequestNotFoundException{
 
         ContactList contactList =  null;
@@ -120,6 +125,7 @@ public class UserRequestServiceImpl implements UserRequestService {
      *
      * @param request
      */
+    @Override
     public void deleteRequest(UserRequest request) {
         userRequestRepository.delete(request);
     }

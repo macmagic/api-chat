@@ -13,7 +13,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class ChatServiceImpl {
+public class ChatServiceImpl implements ChatService{
 
     private final static int SESSION_LENGTH = 40;
 
@@ -36,7 +36,8 @@ public class ChatServiceImpl {
      * @return
      */
     @Transactional
-    public Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException, UserNotFoundException, ChatAlreadyExistsException{
+    @Override
+    public Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException, UserNotFoundException, ChatAlreadyExistsException {
 
         ContactList contactList = contactListService.getContactByOwnerUserAndFriend(userFriend, user);
         if(contactList == null) {
@@ -67,6 +68,7 @@ public class ChatServiceImpl {
      * @param users
      * @return
      */
+    @Override
     public Chat createRoomChat(Room room, List<Long> users) {
         Chat chat = new Chat();
         chat.setSessionId(generateSessionId());
@@ -87,6 +89,7 @@ public class ChatServiceImpl {
      * @return
      * @throws ChatNotFoundException
      */
+    @Override
     public Chat getChatById(Long chatId) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findById(chatId);
         if(!result.isPresent()) {
@@ -95,6 +98,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
+    @Override
     public Chat getChatByRoom(Room room) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findByRoomId(room.getId());
         if(!result.isPresent()) {
@@ -110,6 +114,7 @@ public class ChatServiceImpl {
      * @return
      * @throws ChatNotFoundException
      */
+    @Override
     public Chat getPrivateChatByUserAndFriend(User user, User userFriend) throws ChatNotFoundException {
         List<Long> users = Arrays.asList(user.getId(), userFriend.getId());
         Optional<Chat> result = chatRepository.findByPrivateChatByUsers(users);
@@ -119,10 +124,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
-    private String generateSessionId() {
-        return Utils.generateRandomString(SESSION_LENGTH);
-    }
-
+    @Override
     public Chat getChatByIdAndUser(Long chatId, User user) throws ChatNotFoundException {
         Optional<Chat> result = chatRepository.findByChatAndUser(chatId, user.getId());
 
@@ -132,4 +134,7 @@ public class ChatServiceImpl {
         return result.get();
     }
 
+    private String generateSessionId() {
+        return Utils.generateRandomString(SESSION_LENGTH);
+    }
 }

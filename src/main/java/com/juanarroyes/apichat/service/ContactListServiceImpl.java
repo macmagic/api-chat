@@ -23,10 +23,12 @@ public class ContactListServiceImpl implements ContactListService{
         this.contactListRepository = contactListRepository;
     }
 
+    @Override
     public ContactList getContactListByIdAndOwnerId(Long contactId, Long userId) {
         return contactListRepository.findByIdAndOwnerId(contactId, userId);
     }
 
+    @Override
     public List<ContactList> getContactsByUserId(Long userId) {
         return contactListRepository.findAllByOwnerId(userId);
     }
@@ -37,6 +39,7 @@ public class ContactListServiceImpl implements ContactListService{
      * @param userFriend
      * @return ContactList Result of save data.
      */
+    @Override
     public ContactList createRelation(User userOwner, User userFriend) {
         ContactList contactList = new ContactList();
         contactList.setOwnerId(userOwner.getId());
@@ -45,10 +48,12 @@ public class ContactListServiceImpl implements ContactListService{
         return contactListRepository.save(contactList);
     }
 
+    @Override
     public ContactList getContactByOwnerUserAndFriend(User userOwner, User userFriend) {
         return contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), userFriend.getId());
     }
 
+    @Override
     public ContactList blockContact(Long contactId, Long userId) throws ContactListNotFoundException {
         ContactList contactList = contactListRepository.findByIdAndOwnerId(contactId, userId);
         if(contactList == null) {
@@ -58,6 +63,7 @@ public class ContactListServiceImpl implements ContactListService{
         return contactListRepository.save(contactList);
     }
 
+    @Override
     public ContactList unblockContact(Long contactId, Long userId) throws ContactListNotFoundException {
         ContactList contactList = contactListRepository.findByIdAndOwnerId(contactId, userId);
         if(contactList == null) {
@@ -67,6 +73,7 @@ public class ContactListServiceImpl implements ContactListService{
         return contactListRepository.save(contactList);
     }
 
+    @Override
     public void deleteRelationById(Long contactId) throws ContactListNotFoundException {
         Optional<ContactList> result = contactListRepository.findById(contactId);
         if(!result.isPresent()) {
@@ -75,6 +82,7 @@ public class ContactListServiceImpl implements ContactListService{
         contactListRepository.deleteById(contactId);
     }
 
+    @Override
     public void deleteRelation(User userOwner, User userFriend) throws ContactListNotFoundException{
         ContactList contactList = contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), userFriend.getId());
         if(contactList == null) {

@@ -11,6 +11,22 @@ app:
   jwtSecret: JWTSuperSecretKey
   jwtExpirationInMs: 86400000
 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    db:
+      enabled: true
+    defaults:
+      enabled: false
+    diskspace:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
 ---
 
 spring.profiles: dev-docker

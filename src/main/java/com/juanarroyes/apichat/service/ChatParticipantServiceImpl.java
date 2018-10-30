@@ -26,10 +26,32 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         this.chatParticipantRepository = chatParticipantRepository;
     }
 
+    /**
+     * Add user on chat to make participant
+     *
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chatId Chat id to user is added
+     * @param userId user id to add in chat
+     * @return ChatParticipant Entity information for relation created with chat and user
+     */
+    @Override
     public ChatParticipant addParticipantOnChat(Long chatId, Long userId) {
         return addParticipantOnChat(chatId, userId, false);
     }
 
+    /**
+     * Add user on chat with rol
+     *
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chatId Chat id to user is added
+     * @param userId User id to add in chat
+     * @param isAdmin Set the rol of participant, admin or not
+     * @return ChatParticipant Entity information for relation created with chat and user
+     */
     @Override
     public ChatParticipant addParticipantOnChat(Long chatId, Long userId, boolean isAdmin) {
 
@@ -43,10 +65,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Add users to chat when room chat is new
      *
-     * @param chat
-     * @param users
-     * @return
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chat Chat target to add new users
+     * @param users List of users to add in chat
      */
     @Override
     public void addParticipantsOnChat(Chat chat, List<Long> users) {
@@ -54,11 +79,14 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Add users to chat invited by user admin on room chat
      *
-     * @param chat
-     * @param users
-     * @param user
-     * @return
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chat Chat target to add new users
+     * @param users List of users to add in chat
+     * @param user User to invite the new users to chat
      */
     @Override
     public void addParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException {
@@ -73,11 +101,15 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Get relation with user and chat, if no exists, return exception with ChatParticipantNotFoundException
      *
-     * @param user
-     * @param chatId
-     * @return
-     * @throws ChatParticipantNotFoundException
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param user User with find is in chat
+     * @param chatId Chat target to find user
+     * @return ChatParticipant entity with relation data.
+     * @throws ChatParticipantNotFoundException When relation for chat and user is not found, exception.
      */
     @Override
     public ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException {
