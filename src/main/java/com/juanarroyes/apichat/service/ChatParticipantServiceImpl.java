@@ -129,15 +129,21 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Update user on chat to admin o remove the admin rol
      *
-     * @return
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chat Chat target to update the rol
+     * @param user User to change the rol
+     * @return ChatParticipant entity wiith relation data
      */
     @Override
     public ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException {
 
         ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
         Optional<ChatParticipant> result = chatParticipantRepository.findById(id);
-        if(result.isPresent()) {
+        if(!result.isPresent()) {
             throw new ChatParticipantNotFoundException("Cannot find participant on this chat");
         }
 
@@ -147,9 +153,14 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Delete participants on chat
      *
-     * @param chat
-     * @param users
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chat Chat target with delete the users.
+     * @param users List of users to delete.
+     * @param user User to make the deletion, the user need have a admin rol.
      */
     @Override
     public void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException{
@@ -175,6 +186,15 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         }
     }
 
+    /**
+     * Leave user from chat room
+     *
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chat Chat target to user leave
+     * @param user User to leave
+     */
     @Override
     public void leaveUserFromChat(Chat chat, User user) {
         ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
@@ -182,9 +202,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     /**
+     * Create relation in chat with list of users
      *
-     * @param chatId
-     * @param users
+     * @author jarroyes
+     * @since 2018-10-30
+     *
+     * @param chatId Chat id to make relation
+     * @param users List of users to create relation in chat
      */
     private void createParticipantsOnChat(Long chatId, List<Long> users) {
         if(users == null) {

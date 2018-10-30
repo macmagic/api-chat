@@ -1,9 +1,7 @@
 package com.juanarroyes.apichat.service;
 
-import com.juanarroyes.apichat.exception.ChatAlreadyExistsException;
 import com.juanarroyes.apichat.exception.ChatNotFoundException;
 import com.juanarroyes.apichat.exception.ContactListNotFoundException;
-import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.Room;
 import com.juanarroyes.apichat.model.User;
@@ -12,7 +10,7 @@ import java.util.List;
 
 public interface ChatService {
 
-    Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException, UserNotFoundException, ChatAlreadyExistsException;
+    Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException;
 
     Chat createRoomChat(Room room, List<Long> users);
 
