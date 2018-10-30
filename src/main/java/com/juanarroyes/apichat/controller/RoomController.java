@@ -151,8 +151,9 @@ public class RoomController extends BaseController{
     }
 
     @PutMapping("/changerol")
-    public ResponseEntity updateParticipantRol(@Valid @RequestBody UpdateRolRoomRequest request) {
+    public ResponseEntity<ChatParticipant> updateParticipantRol(@Valid @RequestBody UpdateRolRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ChatParticipant updatedParticipant = null;
 
         try {
             User user = getUserFromToken();
@@ -163,14 +164,14 @@ public class RoomController extends BaseController{
             if(!chatParticipant.isAdmin()) {
                 throw new UserNotAllowedException("User is not admin");
             }
-
-
+            updatedParticipant = chatParticipantService.updateParticipantRol(chat, userUpdateRol, request.getAdmin());
+            httpStatus = HttpStatus.OK;
         } catch (UserNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method updateParticipantRol", e);
         }
-        return new ResponseEntity(httpStatus);
+        return new ResponseEntity<>(updatedParticipant, httpStatus);
     }
 
     @DeleteMapping("/leave")

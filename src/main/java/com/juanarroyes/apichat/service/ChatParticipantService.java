@@ -18,7 +18,9 @@ interface ChatParticipantService {
 
     void addParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException;
 
-    ChatParticipant updateParticipantRol();
+    ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException;
+
+    ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException;
 
     void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException;
 
