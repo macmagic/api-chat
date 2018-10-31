@@ -22,7 +22,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     public UserProfile getProfileByUser(User user) throws UserProfileNotFoundException {
-        Optional<UserProfile> result = userProfileRepository.findById(user);
+        Optional<UserProfile> result = userProfileRepository.findByUserId(user);
         if(!result.isPresent()) {
             throw new UserProfileNotFoundException("Cannot find user profile for user: " + user.getId());
         }

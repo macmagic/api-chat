@@ -10,12 +10,14 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user_profile")
-@IdClass(User.class)
 @EntityListeners(AuditingEntityListener.class)
 public class UserProfile implements Serializable {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User userId;
 
