@@ -116,7 +116,7 @@ public class UserController extends BaseController {
         } catch (UserProfileNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
-            log.error("Unexpected error in method getUserCurrentProfile");
+            log.error("Unexpected error in method getUserCurrentProfile", e);
         }
         return new ResponseEntity<>(userProfile, httpStatus);
     }

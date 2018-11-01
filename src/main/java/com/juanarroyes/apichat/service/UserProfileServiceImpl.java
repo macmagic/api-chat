@@ -3,6 +3,7 @@ package com.juanarroyes.apichat.service;
 import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
+import com.juanarroyes.apichat.model.UserProfileKey;
 import com.juanarroyes.apichat.repository.UserProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     public UserProfile getProfileByUser(User user) throws UserProfileNotFoundException {
-        Optional<UserProfile> result = userProfileRepository.findByUserId(user);
+        UserProfileKey id = new UserProfileKey(user);
+        Optional<UserProfile> result = userProfileRepository.findByUserId(id);
         if(!result.isPresent()) {
             throw new UserProfileNotFoundException("Cannot find user profile for user: " + user.getId());
         }

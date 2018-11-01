@@ -13,13 +13,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class UserProfile implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    @EmbeddedId
+    private UserProfileKey userId;
 
     private String firstname;
 
@@ -47,11 +42,11 @@ public class UserProfile implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
 
-    public User getUser() {
+    public UserProfileKey getUserId() {
         return userId;
     }
 
-    public void setUser(User userId) {
+    public void setUserId(UserProfileKey userId) {
         this.userId = userId;
     }
 
