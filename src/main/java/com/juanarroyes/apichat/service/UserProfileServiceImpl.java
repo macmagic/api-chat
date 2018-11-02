@@ -1,5 +1,7 @@
 package com.juanarroyes.apichat.service;
 
+import com.juanarroyes.apichat.exception.UserAlreadyExistException;
+import com.juanarroyes.apichat.exception.UserProfileAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Slf4j
@@ -30,5 +33,15 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         return result.get();
+    }
+
+    public UserProfile createProfile(UserProfile profile, User user) throws UserProfileAlreadyExistsException {
+        Optional<UserProfile> currentProfile = userProfileRepository.findByUserId(new UserProfileKey(user));
+
+        if(currentProfile.isPresent()) {
+            throw new UserProfileAlreadyExistsException("User " + user.getId() + " actually has a profile associate");
+        }
+
+        return userProfileRepository.save(profile);
     }
 }

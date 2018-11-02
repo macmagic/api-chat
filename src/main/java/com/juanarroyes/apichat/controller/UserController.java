@@ -3,6 +3,7 @@ package com.juanarroyes.apichat.controller;
 import com.juanarroyes.apichat.dto.UserObj;
 import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
+import com.juanarroyes.apichat.exception.UserProfileAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
@@ -138,8 +139,20 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(userProfile, httpStatus);
     }
 
-    /*@PostMapping("/profile")
+    @PostMapping("/profile")
     public ResponseEntity<UserProfile> createProfile(@Valid @RequestBody UserProfile userProfile) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile profile = null;
 
-    }*/
+        try {
+            User user = getUserFromToken();
+            profile = userProfileService.createProfile(userProfile, user);
+            httpStatus = HttpStatus.OK;
+        } catch (UserProfileAlreadyExistsException e) {
+            httpStatus = HttpStatus.CONFLICT;
+        } catch (Exception e) {
+            log.error("Unexpected error in method createProfile", e);
+        }
+        return new ResponseEntity<>(profile, httpStatus);
+    }
 }
