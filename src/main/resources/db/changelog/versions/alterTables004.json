@@ -1,0 +1,46 @@
+{
+  "databaseChangeLog" : [
+    {
+      "changeSet" : {
+        "id" : "add-new-column-user-profile",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "addColumn" : {
+              "catalogName" : "apichat",
+              "columns" : [
+                {
+                  "column" : {
+                    "name" : "id",
+                    "type" : "bigint",
+                    "afterColumn" : "user_id"
+                  }
+                }
+              ],
+              "tableName" : "user_profile"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "catalogName": "apichat",
+              "columnNames": "id",
+              "constraintName": "PK_USER_PROFILE_ID",
+              "schemaName": "apichat",
+              "tableName": "user_profile"
+            }
+          },
+          {
+            "addAutoIncrement": {
+              "catalogName": "apichat",
+              "columnDataType": "bigint",
+              "columnName": "id",
+              "incrementBy": 1,
+              "schemaName": "apichat",
+              "tableName": "user_profile"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

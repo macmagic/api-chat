@@ -3,8 +3,13 @@ package com.juanarroyes.apichat.controller;
 import com.juanarroyes.apichat.dto.UserObj;
 import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
+import com.juanarroyes.apichat.exception.UserProfileAlreadyExistsException;
+import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
+import com.juanarroyes.apichat.model.UserProfile;
+import com.juanarroyes.apichat.request.UserProfileRequest;
 import com.juanarroyes.apichat.service.TokenService;
+import com.juanarroyes.apichat.service.UserProfileService;
 import com.juanarroyes.apichat.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +28,13 @@ import java.util.List;
 public class UserController extends BaseController {
 
     private UserService userService;
+    private UserProfileService userProfileService;
 
     @Autowired
-    public UserController(TokenService tokenService, UserService userService){
+    public UserController(TokenService tokenService, UserService userService, UserProfileService userProfileService){
         super(tokenService, userService);
         this.userService = userService;
+        this.userProfileService = userProfileService;
     }
 
     @GetMapping("/id/{user_id}")
@@ -53,29 +61,27 @@ public class UserController extends BaseController {
 
         User user = null;
 
-        try{
+        try {
             String email = userObj.getEmail();
             String password = userObj.getPassword();
 
 
-            if(email == null || email.equals("")){
+            if (email == null || email.equals("")) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
 
-            if(password == null || password.equals("")){
+            if (password == null || password.equals("")) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             }
 
-            try {
-                user = userService.createUser(email, password);
-                httpStatus = HttpStatus.CREATED;
-            } catch(UserAlreadyExistException ex){
-                log.info(ex.getMessage());
-                throw new HttpClientErrorException(HttpStatus.CONFLICT);
-            }
-        } catch(HttpClientErrorException ex){
+            user = userService.createUser(email, password);
+            httpStatus = HttpStatus.CREATED;
+        } catch (UserAlreadyExistException e) {
+            log.info(e.getMessage());
+            httpStatus = HttpStatus.CONFLICT;
+        } catch (HttpClientErrorException ex) {
             httpStatus = ex.getStatusCode();
-        } catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Unexpected exception in method createUser", ex);
         }
         return new ResponseEntity<>(user, httpStatus);
@@ -98,5 +104,72 @@ public class UserController extends BaseController {
             log.error("Unexpected exception in method getUsers", ex);
         }
         return new ResponseEntity<>(usersFound, httpStatus);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfile> getUserCurrentProfile() {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile userProfile = null;
+
+        try {
+            User user = getUserFromToken();
+            userProfile = userProfileService.getProfileByUser(user);
+            httpStatus = HttpStatus.OK;
+        } catch (UserProfileNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            log.error("Unexpected error in method getUserCurrentProfile", e);
+        }
+        return new ResponseEntity<>(userProfile, httpStatus);
+    }
+
+    @GetMapping("/profile/id/{user_id}")
+    public ResponseEntity<UserProfile> getProfileByUser(@PathVariable("user_id") Long userId) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile userProfile = null;
+
+        try {
+            User user = userService.getUser(userId);
+            userProfile = userProfileService.getProfileByUser(user);
+            httpStatus = HttpStatus.OK;
+        } catch (UserNotFoundException | UserProfileNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            log.error("Unexpected error in method getProfileByUser", e);
+        }
+        return new ResponseEntity<>(userProfile, httpStatus);
+    }
+
+    @PostMapping("/profile")
+    public ResponseEntity<UserProfile> createProfile(@Valid @RequestBody UserProfileRequest request) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile profile = null;
+
+        try {
+            User user = getUserFromToken();
+            profile = userProfileService.createProfile(request, user);
+            httpStatus = HttpStatus.OK;
+        } catch (UserProfileAlreadyExistsException e) {
+            httpStatus = HttpStatus.CONFLICT;
+        } catch (Exception e) {
+            log.error("Unexpected error in method createProfile", e);
+        }
+        return new ResponseEntity<>(profile, httpStatus);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfile> updateProfile(@Valid @RequestBody UserProfileRequest request) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile profile = null;
+
+        try {
+            User user = getUserFromToken();
+            profile = userProfileService.updateProfile(request, user);
+        } catch (UserProfileNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            log.error("Unexpected error in method updateProfile", e);
+        }
+        return new ResponseEntity<>(profile, httpStatus);
     }
 }

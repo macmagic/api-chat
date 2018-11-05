@@ -47,18 +47,13 @@ public class ChatController extends BaseController {
                 throw new ChatUserIsTheSameException("User and user friend its the same");
             }
 
-            try {
-                chat = chatService.createPrivateChat(user, userFriend);
-                httpStatus = HttpStatus.CREATED;
-            } catch (ChatAlreadyExistsException e) {
-                chat = chatService.getPrivateChatByUserAndFriend(user, userFriend);
-                httpStatus = HttpStatus.OK;
-            }
 
+            chat = chatService.createPrivateChat(user, userFriend);
+            httpStatus = HttpStatus.CREATED;
         } catch (ChatUserIsTheSameException e) {
             log.error(e.getMessage());
             httpStatus = HttpStatus.CONFLICT;
-        } catch (UserNotFoundException | ContactListNotFoundException | ChatNotFoundException e) {
+        } catch (UserNotFoundException | ContactListNotFoundException e) {
             log.info(e.getMessage());
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {

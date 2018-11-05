@@ -1,0 +1,23 @@
+{
+  "databaseChangeLog" : [
+    {
+      "changeSet" : {
+        "id" : "add-foreign-key-user-profile",
+        "author" : "jarroyes",
+        "changes" : [
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "user_id",
+              "baseTableName": "user_profile",
+              "constraintName": "FK_USER_PROFILE_USER_ID_IDX",
+              "onDelete": "CASCADE",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "user"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
