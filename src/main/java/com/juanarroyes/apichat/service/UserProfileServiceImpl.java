@@ -7,6 +7,8 @@ import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
 import com.juanarroyes.apichat.model.UserProfileKey;
 import com.juanarroyes.apichat.repository.UserProfileRepository;
+import com.juanarroyes.apichat.request.UserProfileRequest;
+import com.juanarroyes.apichat.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,46 @@ public class UserProfileServiceImpl implements UserProfileService {
             throw new UserProfileAlreadyExistsException("User " + user.getId() + " actually has a profile associate");
         }
 
+        return userProfileRepository.save(profile);
+    }
+
+    /**
+     *
+     * @param request
+     * @param user
+     * @return
+     * @throws UserProfileAlreadyExistsException
+     */
+    public UserProfile createProfile(UserProfileRequest request, User user) throws UserProfileAlreadyExistsException {
+        Optional<UserProfile> currentProfile = userProfileRepository.findByUserId(new UserProfileKey(user));
+
+        if(currentProfile.isPresent()) {
+            throw new UserProfileAlreadyExistsException("User " + user.getId() + " actually has a profile associate");
+        }
+        return saveProfile(request, user);
+    }
+
+    public UserProfile updateProfile(UserProfileRequest request, User user) throws UserProfileNotFoundException {
+        Optional<UserProfile> currentProfile = userProfileRepository.findByUserId(new UserProfileKey(user));
+
+        if(!currentProfile.isPresent()) {
+            throw new UserProfileNotFoundException("Cannot find user profile for this user");
+        }
+
+        return saveProfile(request, user);
+    }
+
+    private UserProfile saveProfile(UserProfileRequest data, User user) {
+        UserProfile profile = new UserProfile();
+        profile.setUserId(new UserProfileKey(user));
+        profile.setFirstname(data.getFirstname());
+        profile.setLastname(data.getLastname());
+        profile.setNickname(data.getNickname());
+        profile.setBirthday(Utils.getDateFromString(data.getBirthday(), "yyyy-M-d"));
+        profile.setCountry(data.getCountry());
+        profile.setLocation(data.getLocation());
+        profile.setAddress(data.getAddress());
+        profile.setPhone(data.getPhone());
         return userProfileRepository.save(profile);
     }
 }

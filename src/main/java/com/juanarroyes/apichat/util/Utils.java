@@ -1,7 +1,14 @@
 package com.juanarroyes.apichat.util;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
+@Slf4j
 public class Utils {
 
     private static final int DEFAULT_LENGHT = 20;
@@ -20,5 +27,24 @@ public class Utils {
             builder.append(characters.charAt(character));
         }
         return builder.toString();
+    }
+
+    /**
+     *
+     * @param inputDate
+     * @param inputFormat
+     * @return
+     */
+    public static Date getDateFromString(String inputDate, String inputFormat) {
+
+        Date date = null;
+
+        try {
+            DateFormat format = new SimpleDateFormat(inputFormat);
+            date = format.parse(inputDate);
+        } catch (ParseException e) {
+            log.error("Unexpected error in method getDateFromString", e);
+        }
+        return date;
     }
 }

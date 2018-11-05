@@ -7,6 +7,7 @@ import com.juanarroyes.apichat.exception.UserProfileAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
+import com.juanarroyes.apichat.request.UserProfileRequest;
 import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserProfileService;
 import com.juanarroyes.apichat.service.UserService;
@@ -140,18 +141,34 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<UserProfile> createProfile(@Valid @RequestBody UserProfile userProfile) {
+    public ResponseEntity<UserProfile> createProfile(@Valid @RequestBody UserProfileRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         UserProfile profile = null;
 
         try {
             User user = getUserFromToken();
-            profile = userProfileService.createProfile(userProfile, user);
+            profile = userProfileService.createProfile(request, user);
             httpStatus = HttpStatus.OK;
         } catch (UserProfileAlreadyExistsException e) {
             httpStatus = HttpStatus.CONFLICT;
         } catch (Exception e) {
             log.error("Unexpected error in method createProfile", e);
+        }
+        return new ResponseEntity<>(profile, httpStatus);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfile> updateProfile(@Valid @RequestBody UserProfileRequest request) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        UserProfile profile = null;
+
+        try {
+            User user = getUserFromToken();
+            profile = userProfileService.updateProfile(request, user);
+        } catch (UserProfileNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            log.error("Unexpected error in method updateProfile", e);
         }
         return new ResponseEntity<>(profile, httpStatus);
     }
