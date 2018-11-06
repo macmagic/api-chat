@@ -18,10 +18,13 @@ import java.util.Optional;
 @Service
 public class RoomServiceImpl implements RoomService {
 
+    private ChatParticipantService chatParticipantService;
+
     private RoomRepository roomRepository;
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository) {
+    public RoomServiceImpl(RoomRepository roomRepository, ChatParticipantService chatParticipantService) {
         this.roomRepository = roomRepository;
+        this.chatParticipantService = chatParticipantService;
     }
 
     @Override
@@ -46,4 +49,7 @@ public class RoomServiceImpl implements RoomService {
         return result.get();
     }
 
+    public void deleteRoom(Room room) {
+        roomRepository.delete(room);
+    }
 }

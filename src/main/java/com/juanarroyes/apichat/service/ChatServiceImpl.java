@@ -74,13 +74,15 @@ public class ChatServiceImpl implements ChatService {
      * @return Chat entity with data
      */
     @Override
-    public Chat createRoomChat(Room room, List<Long> users) {
+    public Chat createRoomChat(Room room, User user, List<Long> users) {
         Chat chat = new Chat();
         chat.setSessionId(generateSessionId());
         chat.setIsRoom(true);
         chat.setPrivate(false);
         chat.setRoomId(room.getId());
         chat = chatRepository.save(chat);
+
+        chatParticipantService.addParticipantOnChat(chat.getId(), user.getId(), true);
 
         if(users != null) {
             chatParticipantService.addParticipantsOnChat(chat, users);

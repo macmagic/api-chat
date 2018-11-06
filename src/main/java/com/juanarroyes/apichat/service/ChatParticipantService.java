@@ -22,7 +22,11 @@ interface ChatParticipantService {
 
     ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException;
 
-    void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException;
+    void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws UserNotAllowedException;
 
     void leaveUserFromChat(Chat chat, User user);
+
+    void kickUserFromChat(Chat chat, User userKicked, User user) throws UserNotAllowedException;
+
+    boolean isUserAdmin(Chat chat, User user);
 }
