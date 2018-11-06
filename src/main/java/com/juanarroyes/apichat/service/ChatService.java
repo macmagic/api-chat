@@ -12,7 +12,7 @@ public interface ChatService {
 
     Chat createPrivateChat(User user, User userFriend) throws ContactListNotFoundException;
 
-    Chat createRoomChat(Room room, List<Long> users);
+    Chat createRoomChat(Room room, User user, List<Long> users);
 
     Chat getChatById(Long chatId) throws ChatNotFoundException;
 

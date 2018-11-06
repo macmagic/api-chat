@@ -113,14 +113,8 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      */
     @Override
     public ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException {
-        ChatParticipantKey idParticipant = new ChatParticipantKey();
-        idParticipant.setChatId(chatId);
-        idParticipant.setUserId(user.getId());
-
-        ChatParticipant chatParticipant = new ChatParticipant();
-        chatParticipant.setId(idParticipant);
-
-        Optional<ChatParticipant> result = chatParticipantRepository.findOne(Example.of(chatParticipant));
+        ChatParticipantKey idParticipant = new ChatParticipantKey(chatId, user.getId());
+        Optional<ChatParticipant> result = chatParticipantRepository.findById(idParticipant);
 
         if(!result.isPresent()) {
             throw new ChatParticipantNotFoundException("Cannot find participant with chat consulted");
@@ -139,7 +133,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @return ChatParticipant entity wiith relation data
      */
     @Override
-    public ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException {
+    public ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin) throws ChatParticipantNotFoundException {
 
         ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
         Optional<ChatParticipant> result = chatParticipantRepository.findById(id);
@@ -163,18 +157,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @param user User to make the deletion, the user need have a admin rol.
      */
     @Override
-    public void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException{
+    public void deleteParticipantsOnChat(Chat chat, List<Long> users, User user) throws UserNotAllowedException{
 
         if(users == null) {
             return;
         }
 
-        ChatParticipantKey participantId = new ChatParticipantKey(chat.getId(), user.getId());
-        Optional<ChatParticipant> result = chatParticipantRepository.findById(participantId);
-
-        if(!result.isPresent()) {
-            throw new ChatParticipantNotFoundException("Cannot find participant relation for user " + user.getId());
-        } else if(!result.get().isAdmin()) {
+        if(!isUserAdmin(chat, user)) {
             throw new UserNotAllowedException("User cannot make this action on this room");
         }
 
@@ -199,6 +188,24 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public void leaveUserFromChat(Chat chat, User user) {
         ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
         chatParticipantRepository.deleteById(id);
+    }
+
+    @Override
+    public void kickUserFromChat(Chat chat, User userKicked, User user) throws UserNotAllowedException{
+        if(!isUserAdmin(chat, user)) {
+            throw new UserNotAllowedException("User cannot make this action on this room");
+        }
+
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        chatParticipantRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean isUserAdmin(Chat chat, User user) {
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        Optional<ChatParticipant> result = chatParticipantRepository.findById(id);
+
+        return result.isPresent() && result.get().isAdmin();
     }
 
     /**

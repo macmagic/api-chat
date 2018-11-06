@@ -44,8 +44,9 @@ public class RoomController extends BaseController{
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         RoomCreationResponse response = null;
         try {
+            User user = getUserFromToken();
             Room room = roomService.createRoom(request.getRoomName());
-            Chat chat = chatService.createRoomChat(room, request.getUsersRoom());
+            Chat chat = chatService.createRoomChat(room, user, request.getUsersRoom());
             response = new RoomCreationResponse(room, chat);
             httpStatus = HttpStatus.CREATED;
         } catch(Exception ex) {
@@ -70,6 +71,12 @@ public class RoomController extends BaseController{
         return new ResponseEntity<>(rooms, httpStatus);
     }
 
+    @GetMapping("/users/room_id/{id}")
+    public ResponseEntity getUsersFromRoom(@PathVariable("id") Long roomId) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        return new ResponseEntity(httpStatus);
+    }
+
     @PostMapping("/users")
     public ResponseEntity addUsersInRoom(@Valid @RequestBody UsersRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -80,7 +87,7 @@ public class RoomController extends BaseController{
             Chat chat = chatService.getChatByRoom(room);
             chatParticipantService.addParticipantsOnChat(chat, request.getUsers(), user);
             httpStatus = HttpStatus.CREATED;
-        } catch (RoomNotFoundException | ChatNotFoundException e) {
+        } catch (RoomNotFoundException | ChatParticipantNotFoundException | ChatNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method addUsersInRoom", e);
@@ -96,11 +103,13 @@ public class RoomController extends BaseController{
             Room room = roomService.getRoomById(roomId);
             User user = getUserFromToken();
             Chat chat = chatService.getChatByRoom(room);
-            ChatParticipant chatParticipant = chatParticipantService.getParticipantInChat(user, chat.getId());
-            if (!chatParticipant.isAdmin()) {
-                throw new UserNotAllowedException("User is not admin!");
+
+            if(!chatParticipantService.isUserAdmin(chat, user)) {
+                throw new UserNotAllowedException("User cannot allowed for this action");
             }
-        } catch (RoomNotFoundException | ChatNotFoundException | ChatParticipantNotFoundException e) {
+            roomService.deleteRoom(room);
+            httpStatus = HttpStatus.OK;
+        } catch (RoomNotFoundException | ChatNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (UserNotAllowedException e) {
             httpStatus = HttpStatus.UNAUTHORIZED;
@@ -120,7 +129,7 @@ public class RoomController extends BaseController{
             Chat chat = chatService.getChatByRoom(room);
             chatParticipantService.deleteParticipantsOnChat(chat, request.getUsers(), user);
             httpStatus = HttpStatus.RESET_CONTENT;
-        } catch (RoomNotFoundException | ChatParticipantNotFoundException | ChatNotFoundException e) {
+        } catch (RoomNotFoundException | ChatNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (UserNotAllowedException e) {
             httpStatus = HttpStatus.UNAUTHORIZED;
@@ -136,16 +145,12 @@ public class RoomController extends BaseController{
         Room room = null;
 
         try {
-            try {
-                room = roomService.getRoomById(id);
-            } catch(RoomNotFoundException ex) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-            }
+            room = roomService.getRoomById(id);
             httpStatus = HttpStatus.OK;
-        } catch(HttpClientErrorException ex) {
-            httpStatus = ex.getStatusCode();
-        } catch(Exception ex) {
-            log.error("Unexpected error in method getRoomById", ex);
+        } catch(RoomNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch(Exception e) {
+            log.error("Unexpected error in method getRoomById", e);
         }
         return new ResponseEntity<>(room, httpStatus);
     }
@@ -186,6 +191,26 @@ public class RoomController extends BaseController{
             httpStatus = HttpStatus.OK;
         } catch(Exception e) {
             log.error("Unexpected error in method leaveARoom", e);
+        }
+        return new ResponseEntity(httpStatus);
+    }
+
+    @DeleteMapping("/kick")
+    public ResponseEntity kickUserFromRoom(@RequestParam("room_id") Long roomId, @RequestParam("user_id") Long userId) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        try {
+            User user = getUserFromToken();
+            User userKick = userService.getUser(userId);
+            Room room = roomService.getRoomById(roomId);
+            Chat chat = chatService.getChatByRoom(room);
+            chatParticipantService.kickUserFromChat(chat, userKick, user);
+        } catch (UserNotFoundException | ChatNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (UserNotAllowedException e) {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+        } catch (Exception e) {
+            log.error("Unexpected error in method kickUserFromRoom", e);
         }
         return new ResponseEntity(httpStatus);
     }

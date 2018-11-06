@@ -1,9 +1,12 @@
 package com.juanarroyes.apichat.request;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import java.util.List;
 
 public class UsersRoomRequest {
 
+    @JsonAlias("room_id")
     private Long roomId;
 
     private List<Long> users;
