@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -32,13 +33,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @author jarroyes
      * @since 2018-10-30
      *
-     * @param chatId Chat id to user is added
-     * @param userId user id to add in chat
+     * @param chat Chat id to user is added
+     * @param user user id to add in chat
      * @return ChatParticipant Entity information for relation created with chat and user
      */
     @Override
-    public ChatParticipant addParticipantOnChat(Long chatId, Long userId) {
-        return addParticipantOnChat(chatId, userId, false);
+    public ChatParticipant addParticipantOnChat(Chat chat, User user) {
+        return addParticipantOnChat(chat, user, false);
     }
 
     /**
@@ -47,18 +48,18 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @author jarroyes
      * @since 2018-10-30
      *
-     * @param chatId Chat id to user is added
-     * @param userId User id to add in chat
+     * @param chat Chat id to user is added
+     * @param user User id to add in chat
      * @param isAdmin Set the rol of participant, admin or not
      * @return ChatParticipant Entity information for relation created with chat and user
      */
     @Override
-    public ChatParticipant addParticipantOnChat(Long chatId, Long userId, boolean isAdmin) {
+    public ChatParticipant addParticipantOnChat(Chat chat, User user, boolean isAdmin) {
 
         ChatParticipant chatParticipant = new ChatParticipant();
         ChatParticipantKey chatParticipantKey = new ChatParticipantKey();
-        chatParticipantKey.setChatId(chatId);
-        chatParticipantKey.setUserId(userId);
+        chatParticipantKey.setChatId(chat.getId());
+        chatParticipantKey.setUserId(user.getId());
         chatParticipant.setId(chatParticipantKey);
         chatParticipant.setAdmin(isAdmin);
         return chatParticipantRepository.save(chatParticipant);
@@ -92,12 +93,16 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public void addParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException {
 
         if(user != null) {
-            ChatParticipant chatParticipant = getParticipantInChat(user, chat.getId());
+            ChatParticipant chatParticipant = getParticipantInChat(user, chat);
             if(!chatParticipant.isAdmin()) {
                 throw new UserNotAllowedException("User is not admin to add participants on chat");
             }
         }
         createParticipantsOnChat(chat.getId(), users);
+    }
+
+    public List<ChatParticipant> getListOfParticipantsInChat (Chat chat) {
+        return chatParticipantRepository.findAllByChat(chat.getId());
     }
 
     /**
@@ -107,13 +112,13 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @since 2018-10-30
      *
      * @param user User with find is in chat
-     * @param chatId Chat target to find user
+     * @param chat Chat target to find user
      * @return ChatParticipant entity with relation data.
      * @throws ChatParticipantNotFoundException When relation for chat and user is not found, exception.
      */
     @Override
-    public ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException {
-        ChatParticipantKey idParticipant = new ChatParticipantKey(chatId, user.getId());
+    public ChatParticipant getParticipantInChat (User user, Chat chat) throws ChatParticipantNotFoundException {
+        ChatParticipantKey idParticipant = new ChatParticipantKey(chat.getId(), user.getId());
         Optional<ChatParticipant> result = chatParticipantRepository.findById(idParticipant);
 
         if(!result.isPresent()) {
@@ -188,6 +193,9 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     public void leaveUserFromChat(Chat chat, User user) {
         ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
         chatParticipantRepository.deleteById(id);
+        if(!checkIfExistsAnotherAdminOnRoomChat(chat)) {
+            addRandomAdminOnRoomChat(chat);
+        }
     }
 
     @Override
@@ -217,7 +225,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
      * @param chatId Chat id to make relation
      * @param users List of users to create relation in chat
      */
-    private void createParticipantsOnChat(Long chatId, List<Long> users) {
+    private void createParticipantsOnChat (Long chatId, List<Long> users) {
         if(users == null) {
             return;
         }
@@ -233,4 +241,33 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         }
     }
 
+    /**
+     * Check if exists a one admin on room chat
+     *
+     * @author jarroyes
+     * @since 2018-11-07
+     *
+     * @param chat Chat object with check admin
+     * @return boolean return true if exists or false if not
+     */
+    private boolean checkIfExistsAnotherAdminOnRoomChat (Chat chat) {
+        List<ChatParticipant> chatParticipants = chatParticipantRepository.findAllByChatAndAdmin(chat.getId(), true);
+        return !chatParticipants.isEmpty();
+    }
+
+    /**
+     * Set one user random from room to admin
+     *
+     * @author jarroyes
+     * @since 2018-11-07
+     *
+     * @param chat Chat object to set a admin
+     */
+    private void addRandomAdminOnRoomChat(Chat chat) {
+        List<ChatParticipant> listParticipants = chatParticipantRepository.findAllByChat(chat.getId());
+        int keyRandom = new Random().nextInt(listParticipants.size());
+        ChatParticipant participant = listParticipants.get(keyRandom);
+        participant.setAdmin(true);
+        chatParticipantRepository.save(participant);
+    }
 }
