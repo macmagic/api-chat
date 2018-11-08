@@ -4,7 +4,6 @@ import com.juanarroyes.apichat.exception.BadRequestException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.repository.RefreshTokenRepository;
-import com.juanarroyes.apichat.repository.UserRepository;
 import com.juanarroyes.apichat.request.LoginRequest;
 import com.juanarroyes.apichat.request.RefreshTokenRequest;
 import com.juanarroyes.apichat.request.RegisterRequest;
@@ -42,9 +41,7 @@ public class AuthController {
 
     private TokenService tokenService;
 
-    private UserRepository userRepository;
-
-    RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Value("${app.jwtExpirationInMs}")
     private Long jwtExpirationInMs;
@@ -54,13 +51,11 @@ public class AuthController {
                           UserService userService,
                           PasswordEncoder passwordEncoder,
                           TokenService tokenService,
-                          UserRepository userRepository,
                           RefreshTokenRepository refreshTokenRepository){
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 

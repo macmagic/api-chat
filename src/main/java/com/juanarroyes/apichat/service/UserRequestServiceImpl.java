@@ -5,16 +5,13 @@ import com.juanarroyes.apichat.exception.ContactListAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserRequestAlreadyExistsException;
 import com.juanarroyes.apichat.exception.UserRequestNotFoundException;
 import com.juanarroyes.apichat.model.ContactList;
-import com.juanarroyes.apichat.model.ContactListStatus;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserRequest;
 import com.juanarroyes.apichat.repository.UserRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,9 +1,6 @@
 package com.juanarroyes.apichat.service;
 
-import com.juanarroyes.apichat.exception.ChatParticipantNotFoundException;
 import com.juanarroyes.apichat.exception.RoomNotFoundException;
-import com.juanarroyes.apichat.exception.UserNotAllowedException;
-import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.Room;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.repository.RoomRepository;
@@ -18,13 +15,10 @@ import java.util.Optional;
 @Service
 public class RoomServiceImpl implements RoomService {
 
-    private ChatParticipantService chatParticipantService;
-
     private RoomRepository roomRepository;
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, ChatParticipantService chatParticipantService) {
+    public RoomServiceImpl(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
-        this.chatParticipantService = chatParticipantService;
     }
 
     @Override
