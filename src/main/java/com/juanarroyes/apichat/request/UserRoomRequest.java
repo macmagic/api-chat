@@ -2,7 +2,7 @@ package com.juanarroyes.apichat.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
-public class UpdateRolRoomRequest {
+public class UserRoomRequest {
 
     @JsonAlias("user_id")
     private Long userId;

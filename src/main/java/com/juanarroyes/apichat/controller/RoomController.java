@@ -5,9 +5,7 @@ import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.ChatParticipant;
 import com.juanarroyes.apichat.model.Room;
 import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.request.UpdateRolRoomRequest;
-import com.juanarroyes.apichat.request.UsersRoomRequest;
-import com.juanarroyes.apichat.request.CreateRoomRequest;
+import com.juanarroyes.apichat.request.*;
 import com.juanarroyes.apichat.response.RoomCreationResponse;
 import com.juanarroyes.apichat.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -40,7 +37,7 @@ public class RoomController extends BaseController{
     }
 
     @PostMapping()
-    public ResponseEntity<RoomCreationResponse> createRoom(@RequestBody CreateRoomRequest request) {
+    public ResponseEntity<RoomCreationResponse> createRoom(@RequestBody RoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         RoomCreationResponse response = null;
         try {
@@ -71,10 +68,24 @@ public class RoomController extends BaseController{
         return new ResponseEntity<>(rooms, httpStatus);
     }
 
-    @GetMapping("/users/room_id/{id}")
-    public ResponseEntity getUsersFromRoom(@PathVariable("id") Long roomId) {
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<ChatParticipant>> getUsersFromRoom(@PathVariable("id") Long roomId) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        return new ResponseEntity(httpStatus);
+        List<ChatParticipant> chatParticipants = null;
+
+        try {
+            User user = getUserFromToken();
+            Room room = roomService.getRoomById(roomId);
+            Chat chat = chatService.getChatByRoom(room);
+            chatParticipantService.getParticipantInChat(user, chat);
+            chatParticipants = chatParticipantService.getListOfParticipantsInChat(chat);
+            httpStatus = HttpStatus.OK;
+        } catch (RoomNotFoundException | ChatNotFoundException | ChatParticipantNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            log.error("Unexpected error in method getUsersFromRoom", e);
+        }
+        return new ResponseEntity<>(chatParticipants, httpStatus);
     }
 
     @PostMapping("/users")
@@ -156,7 +167,7 @@ public class RoomController extends BaseController{
     }
 
     @PutMapping("/changerol")
-    public ResponseEntity<ChatParticipant> updateParticipantRol(@Valid @RequestBody UpdateRolRoomRequest request) {
+    public ResponseEntity<ChatParticipant> updateParticipantRol(@Valid @RequestBody UserRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ChatParticipant updatedParticipant = null;
 
@@ -165,13 +176,13 @@ public class RoomController extends BaseController{
             User userUpdateRol = userService.getUser(request.getUserId());
             Room room = roomService.getRoomById(request.getRoomId());
             Chat chat = chatService.getChatByRoom(room);
-            ChatParticipant chatParticipant = chatParticipantService.getParticipantInChat(user, chat.getId());
-            if(!chatParticipant.isAdmin()) {
+            ChatParticipant chatParticipant = chatParticipantService.getParticipantInChat(user, chat);
+            if (!chatParticipant.isAdmin()) {
                 throw new UserNotAllowedException("User is not admin");
             }
             updatedParticipant = chatParticipantService.updateParticipantRol(chat, userUpdateRol, request.getAdmin());
             httpStatus = HttpStatus.OK;
-        } catch (UserNotFoundException e) {
+        } catch (RoomNotFoundException | UserNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method updateParticipantRol", e);
@@ -179,8 +190,8 @@ public class RoomController extends BaseController{
         return new ResponseEntity<>(updatedParticipant, httpStatus);
     }
 
-    @DeleteMapping("/leave")
-    public ResponseEntity leaveARoom(@RequestParam("room_id") Long roomId) {
+    @DeleteMapping("/leave/{room_id}")
+    public ResponseEntity leaveARoom(@PathVariable("room_id") Long roomId) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
@@ -196,15 +207,16 @@ public class RoomController extends BaseController{
     }
 
     @DeleteMapping("/kick")
-    public ResponseEntity kickUserFromRoom(@RequestParam("room_id") Long roomId, @RequestParam("user_id") Long userId) {
+    public ResponseEntity kickUserFromRoom(@RequestBody UserRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
             User user = getUserFromToken();
-            User userKick = userService.getUser(userId);
-            Room room = roomService.getRoomById(roomId);
+            User userKick = userService.getUser(request.getUserId());
+            Room room = roomService.getRoomById(request.getRoomId());
             Chat chat = chatService.getChatByRoom(room);
             chatParticipantService.kickUserFromChat(chat, userKick, user);
+            httpStatus = HttpStatus.OK;
         } catch (UserNotFoundException | ChatNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (UserNotAllowedException e) {

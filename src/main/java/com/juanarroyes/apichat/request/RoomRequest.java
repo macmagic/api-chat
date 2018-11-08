@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.util.List;
 
-public class CreateRoomRequest {
+public class RoomRequest {
 
     @JsonAlias("room_name")
     private String roomName;
+
+    @JsonAlias("room_message")
+    private String roomMessage;
 
     @JsonAlias("users_room")
     private List<Long> usersRoom;
@@ -18,6 +21,14 @@ public class CreateRoomRequest {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public String getRoomMessage() {
+        return roomMessage;
+    }
+
+    public void setRoomMessage(String roomMessage) {
+        this.roomMessage = roomMessage;
     }
 
     public List<Long> getUsersRoom() {

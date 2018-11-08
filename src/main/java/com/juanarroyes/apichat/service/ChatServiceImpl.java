@@ -57,10 +57,10 @@ public class ChatServiceImpl implements ChatService {
         newChat.setIsRoom(false);
         newChat.setSessionId(generateSessionId());
         newChat.setPrivate(true);
-        Chat result = chatRepository.save(newChat);
-        chatParticipantService.addParticipantOnChat(result.getId(), user.getId());
-        chatParticipantService.addParticipantOnChat(result.getId(), user.getId());
-        return result;
+        Chat chat = chatRepository.save(newChat);
+        chatParticipantService.addParticipantOnChat(chat, user);
+        chatParticipantService.addParticipantOnChat(chat, userFriend);
+        return chat;
     }
 
     /**
@@ -82,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
         chat.setRoomId(room.getId());
         chat = chatRepository.save(chat);
 
-        chatParticipantService.addParticipantOnChat(chat.getId(), user.getId(), true);
+        chatParticipantService.addParticipantOnChat(chat, user, true);
 
         if(users != null) {
             chatParticipantService.addParticipantsOnChat(chat, users);

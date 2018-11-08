@@ -10,15 +10,17 @@ import java.util.List;
 
 interface ChatParticipantService {
 
-    ChatParticipant addParticipantOnChat(Long chatId, Long userId);
+    ChatParticipant addParticipantOnChat(Chat chat, User user);
 
-    ChatParticipant addParticipantOnChat(Long chatId, Long userId, boolean isAdmin);
+    ChatParticipant addParticipantOnChat(Chat chat, User user, boolean isAdmin);
 
     void addParticipantsOnChat(Chat chat, List<Long> users);
 
     void addParticipantsOnChat(Chat chat, List<Long> users, User user) throws ChatParticipantNotFoundException, UserNotAllowedException;
 
-    ChatParticipant getParticipantInChat (User user, Long chatId) throws ChatParticipantNotFoundException;
+    List<ChatParticipant> getListOfParticipantsInChat (Chat chat);
+
+    ChatParticipant getParticipantInChat (User user, Chat chat) throws ChatParticipantNotFoundException;
 
     ChatParticipant updateParticipantRol(Chat chat, User user, Boolean admin)throws ChatParticipantNotFoundException;
 
