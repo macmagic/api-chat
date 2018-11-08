@@ -68,17 +68,19 @@ public class RoomController extends BaseController{
         return new ResponseEntity<>(rooms, httpStatus);
     }
 
-    @GetMapping("/users/room_id/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<List<ChatParticipant>> getUsersFromRoom(@PathVariable("id") Long roomId) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         List<ChatParticipant> chatParticipants = null;
 
         try {
+            User user = getUserFromToken();
             Room room = roomService.getRoomById(roomId);
             Chat chat = chatService.getChatByRoom(room);
+            chatParticipantService.getParticipantInChat(user, chat);
             chatParticipants = chatParticipantService.getListOfParticipantsInChat(chat);
             httpStatus = HttpStatus.OK;
-        } catch (RoomNotFoundException | ChatNotFoundException e) {
+        } catch (RoomNotFoundException | ChatNotFoundException | ChatParticipantNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             log.error("Unexpected error in method getUsersFromRoom", e);
@@ -205,15 +207,16 @@ public class RoomController extends BaseController{
     }
 
     @DeleteMapping("/kick")
-    public ResponseEntity kickUserFromRoom(@RequestParam("room_id") Long roomId, @RequestParam("user_id") Long userId) {
+    public ResponseEntity kickUserFromRoom(@RequestBody UserRoomRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
             User user = getUserFromToken();
-            User userKick = userService.getUser(userId);
-            Room room = roomService.getRoomById(roomId);
+            User userKick = userService.getUser(request.getUserId());
+            Room room = roomService.getRoomById(request.getRoomId());
             Chat chat = chatService.getChatByRoom(room);
             chatParticipantService.kickUserFromChat(chat, userKick, user);
+            httpStatus = HttpStatus.OK;
         } catch (UserNotFoundException | ChatNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
         } catch (UserNotAllowedException e) {

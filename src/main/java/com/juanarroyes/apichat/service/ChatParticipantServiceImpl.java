@@ -204,7 +204,7 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
             throw new UserNotAllowedException("User cannot make this action on this room");
         }
 
-        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), userKicked.getId());
         chatParticipantRepository.deleteById(id);
     }
 
