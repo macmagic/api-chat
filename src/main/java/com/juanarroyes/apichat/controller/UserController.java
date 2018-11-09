@@ -1,6 +1,5 @@
 package com.juanarroyes.apichat.controller;
 
-import com.juanarroyes.apichat.dto.UserObj;
 import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.exception.UserProfileAlreadyExistsException;
@@ -8,6 +7,7 @@ import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.model.UserProfile;
 import com.juanarroyes.apichat.request.UserProfileRequest;
+import com.juanarroyes.apichat.request.UserRequest;
 import com.juanarroyes.apichat.service.TokenService;
 import com.juanarroyes.apichat.service.UserProfileService;
 import com.juanarroyes.apichat.service.UserService;
@@ -56,14 +56,14 @@ public class UserController extends BaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<User> createUser(UserObj userObj){
+    public ResponseEntity<User> createUser(UserRequest request){
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         User user = null;
 
         try {
-            String email = userObj.getEmail();
-            String password = userObj.getPassword();
+            String email = request.getEmail();
+            String password = request.getPassword();
 
 
             if (email == null || email.equals("")) {

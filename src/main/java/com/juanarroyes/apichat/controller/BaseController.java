@@ -3,7 +3,6 @@ package com.juanarroyes.apichat.controller;
 import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.service.TokenService;
-import com.juanarroyes.apichat.service.TokenServiceImpl;
 import com.juanarroyes.apichat.service.UserService;
 import com.juanarroyes.apichat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class BaseController {
 
-    protected TokenService tokenService;
+    TokenService tokenService;
 
     private UserService userService;
 
@@ -28,7 +27,7 @@ public class BaseController {
         this.userService = userService;
     }
 
-    protected User getUserFromToken() {
+    User getUserFromToken() {
 
         User user = null;
         Long userId = null;

@@ -8,7 +8,6 @@ import com.juanarroyes.apichat.model.UserRequest;
 import com.juanarroyes.apichat.request.UserAnswerRequest;
 import com.juanarroyes.apichat.request.UserRequestRequest;
 import com.juanarroyes.apichat.service.*;
-import com.juanarroyes.apichat.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
