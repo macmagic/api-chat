@@ -146,6 +146,11 @@ public class ChatServiceImpl implements ChatService {
         return result.get();
     }
 
+    @Override
+    public List<Chat> getChatsByUser(User user) {
+        return chatRepository.findAllByUser(user.getId());
+    }
+
     private String generateSessionId() {
         return Utils.generateRandomString(SESSION_LENGTH);
     }

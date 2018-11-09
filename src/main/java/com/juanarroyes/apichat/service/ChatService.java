@@ -21,4 +21,6 @@ public interface ChatService {
     Chat getPrivateChatByUserAndFriend(User user, User userFriend) throws ChatNotFoundException;
 
     Chat getChatByIdAndUser(Long chatId, User user) throws ChatNotFoundException;
+
+    List<Chat> getChatsByUser(User user);
 }
