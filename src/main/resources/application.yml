@@ -4,6 +4,13 @@ server:
     enabled: true
 
 spring:
+  jpa:
+    properties:
+      hibernate:
+        type: trace
+        format_sql: true
+        show-sql: true
+    show-sql: true
   application:
     name: apichat
 

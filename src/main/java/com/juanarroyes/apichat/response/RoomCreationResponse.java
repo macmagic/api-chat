@@ -10,7 +10,6 @@ public class RoomCreationResponse {
     private Chat chat;
 
     public RoomCreationResponse(Room room, Chat chat) {
-        this.room = room;
         this.chat = chat;
     }
 

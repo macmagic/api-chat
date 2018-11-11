@@ -6,8 +6,8 @@ import java.util.List;
 
 public class UsersRoomRequest {
 
-    @JsonAlias("room_id")
-    private Long roomId;
+    @JsonAlias("chat_room_id")
+    private Long chatRoomId;
 
     private List<Long> users;
 
@@ -15,17 +15,17 @@ public class UsersRoomRequest {
 
     }
 
-    public UsersRoomRequest(Long roomId, List<Long> users) {
-        this.roomId = roomId;
+    public UsersRoomRequest(Long chatRoomId, List<Long> users) {
+        this.chatRoomId = chatRoomId;
         this.users = users;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getChatRoomId() {
+        return chatRoomId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setChatRoomId(Long roomId) {
+        this.chatRoomId = roomId;
     }
 
     public List<Long> getUsers() {

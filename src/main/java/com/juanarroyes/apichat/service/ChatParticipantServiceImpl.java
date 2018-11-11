@@ -215,6 +215,11 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
         return result.isPresent() && result.get().isAdmin();
     }
 
+    @Override
+    public void deleteAllParticipantsFromChat(Chat chat) {
+        chatParticipantRepository.deleteAllByChat(chat.getId());
+    }
+
     /**
      * Create relation in chat with list of users
      *

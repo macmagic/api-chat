@@ -17,13 +17,15 @@ public class ChatServiceImpl implements ChatService {
     private static final int SESSION_LENGTH = 40;
 
     private ChatRepository chatRepository;
-    private ChatParticipantServiceImpl chatParticipantService;
+    private ChatParticipantService chatParticipantService;
     private ContactListService contactListService;
+    private RoomService roomService;
 
-    public ChatServiceImpl(ChatRepository chatRepository, ChatParticipantServiceImpl chatParticipantService, ContactListService contactListService) {
+    public ChatServiceImpl(ChatRepository chatRepository, ChatParticipantServiceImpl chatParticipantService, ContactListService contactListService, RoomService roomService) {
         this.chatRepository = chatRepository;
         this.chatParticipantService = chatParticipantService;
         this.contactListService = contactListService;
+        this.roomService = roomService;
     }
 
     /**
@@ -79,7 +81,7 @@ public class ChatServiceImpl implements ChatService {
         chat.setSessionId(generateSessionId());
         chat.setIsRoom(true);
         chat.setPrivate(false);
-        chat.setRoomId(room.getId());
+        chat.setRoom(room);
         chat = chatRepository.save(chat);
 
         chatParticipantService.addParticipantOnChat(chat, user, true);
@@ -105,15 +107,6 @@ public class ChatServiceImpl implements ChatService {
         Optional<Chat> result = chatRepository.findById(chatId);
         if(!result.isPresent()) {
             throw new ChatNotFoundException("Cannot find chat: " + chatId);
-        }
-        return result.get();
-    }
-
-    @Override
-    public Chat getChatByRoom(Room room) throws ChatNotFoundException {
-        Optional<Chat> result = chatRepository.findByRoomId(room.getId());
-        if(!result.isPresent()) {
-            throw new ChatNotFoundException("Cannot find chat for this room");
         }
         return result.get();
     }
@@ -144,6 +137,22 @@ public class ChatServiceImpl implements ChatService {
             throw new ChatNotFoundException("Cannot find private chat for chat_id: " + chatId + " and user " + user.getId());
         }
         return result.get();
+    }
+
+    @Override
+    public List<Chat> getChatsByUser(User user) {
+        return chatRepository.findAllByUser(user.getId());
+    }
+
+    @Override
+    public List<Chat> getChatRoomsByUser(User user) {
+        return chatRepository.findAllChatRoomsByUser(user.getId());
+    }
+
+    public void deleteChatRoom(Chat chat) {
+        chatParticipantService.deleteAllParticipantsFromChat(chat);
+        chatRepository.delete(chat);
+        roomService.deleteRoomInfo(chat.getRoom());
     }
 
     private String generateSessionId() {

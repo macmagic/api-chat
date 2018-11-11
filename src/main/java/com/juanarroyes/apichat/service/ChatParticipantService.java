@@ -31,4 +31,6 @@ interface ChatParticipantService {
     void kickUserFromChat(Chat chat, User userKicked, User user) throws UserNotAllowedException;
 
     boolean isUserAdmin(Chat chat, User user);
+
+    void deleteAllParticipantsFromChat(Chat chat);
 }

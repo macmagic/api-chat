@@ -3,8 +3,10 @@ package com.juanarroyes.apichat.repository;
 import com.juanarroyes.apichat.model.ChatParticipant;
 import com.juanarroyes.apichat.model.ChatParticipantKey;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,4 +17,9 @@ public interface ChatParticipantRepository extends JpaRepository<ChatParticipant
 
     @Query(value = "SELECT cp.* FROM chat_participant cp WHERE cp.chat_id = :chat_id", nativeQuery = true)
     List<ChatParticipant> findAllByChat(@Param("chat_id") Long chatId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM chat_participant WHERE chat_id = :chat_id", nativeQuery = true)
+    void deleteAllByChat(@Param("chat_id") Long chatId);
 }
