@@ -65,7 +65,7 @@ public class ChatController extends BaseController {
     public ResponseEntity<Chat> getChat(@PathVariable("id") Long chatId) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        Chat chat = null;
+        Chat chat = new Chat();
 
         try {
             chat = chatService.getChatById(chatId);

@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.repository;
 
 import com.juanarroyes.apichat.model.Chat;
+import com.juanarroyes.apichat.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,8 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Query(value = "SELECT c.* FROM chat c INNER JOIN chat_participant cp ON cp.chat_id = c.id WHERE c.id = :chat_id AND cp.user_id = :user_id", nativeQuery = true)
     Optional<Chat> findByChatAndUser(@Param("chat_id") Long chatId, @Param("user_id") Long userId);
 
-    Optional<Chat> findByRoomId(Long roomId);
+    @Query(value = "SELECT c.* FROM chat c INNER JOIN chat_participant cha ON cha.chat_id = c.id WHERE c.is_private = 0 AND cha.user_id = :user_id", nativeQuery = true)
+    List<Chat> findAllChatRoomsByUser(@Param("user_id") Long userId);
 
     @Query(value = "SELECT c.* FROM chat c INNER JOIN chat_participant cp ON cp.chat_id = c.id WHERE cp.user_id = :user_id", nativeQuery = true)
     List<Chat> findAllByUser(@Param("user_id") Long userId);

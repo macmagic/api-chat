@@ -26,8 +26,9 @@ public class Chat implements Serializable {
     @Column(name = "is_room")
     private boolean isRoom;
 
-    @Column(name = "room_id")
-    private Long roomId;
+    @OneToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @CreationTimestamp
     @Column(nullable =  false, updatable = false)
@@ -71,13 +72,21 @@ public class Chat implements Serializable {
         this.isRoom = isRoom;
     }
 
-    public Long getRoomId() {
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    /*public Long getRoomId() {
         return roomId;
     }
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
-    }
+    }*/
 
     public Date getCreated() {
         return created;

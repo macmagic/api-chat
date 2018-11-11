@@ -16,11 +16,13 @@ public interface ChatService {
 
     Chat getChatById(Long chatId) throws ChatNotFoundException;
 
-    Chat getChatByRoom(Room room) throws ChatNotFoundException;
-
     Chat getPrivateChatByUserAndFriend(User user, User userFriend) throws ChatNotFoundException;
 
     Chat getChatByIdAndUser(Long chatId, User user) throws ChatNotFoundException;
 
     List<Chat> getChatsByUser(User user);
+
+    List<Chat> getChatRoomsByUser(User user);
+
+    void deleteChatRoom(Chat chat);
 }

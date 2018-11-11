@@ -10,7 +10,9 @@ public interface RoomService {
 
     List<Room> getRoomsByUser(User user);
 
-    Room createRoom(String room);
+    Room createRoom(String roomName, String roomMessage);
 
     Room getRoomById(Long id) throws RoomNotFoundException;
+
+    void deleteRoomInfo(Room room);
 }

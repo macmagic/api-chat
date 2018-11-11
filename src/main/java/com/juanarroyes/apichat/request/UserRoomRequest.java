@@ -7,8 +7,8 @@ public class UserRoomRequest {
     @JsonAlias("user_id")
     private Long userId;
 
-    @JsonAlias("room_id")
-    private Long roomId;
+    @JsonAlias("chat_room_id")
+    private Long chatRoomId;
 
     @JsonAlias("admin")
     private Boolean admin;
@@ -21,12 +21,12 @@ public class UserRoomRequest {
         this.userId = userId;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getChatRoomId() {
+        return chatRoomId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setChatRoomId(Long chatRoomId) {
+        this.chatRoomId = chatRoomId;
     }
 
     public Boolean getAdmin() {

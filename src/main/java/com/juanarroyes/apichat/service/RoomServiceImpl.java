@@ -27,9 +27,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room createRoom(String roomName) {
+    public Room createRoom(String roomName, String roomMessage) {
         Room room = new Room();
         room.setRoomName(roomName);
+        room.setRoomMessageBroadcast(roomMessage);
         return roomRepository.save(room);
     }
 
@@ -43,7 +44,8 @@ public class RoomServiceImpl implements RoomService {
         return result.get();
     }
 
-    public void deleteRoom(Room room) {
+    @Override
+    public void deleteRoomInfo(Room room) {
         roomRepository.delete(room);
     }
 }

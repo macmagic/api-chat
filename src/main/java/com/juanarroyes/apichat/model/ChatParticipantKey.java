@@ -14,7 +14,10 @@ public class ChatParticipantKey implements Serializable {
     private Long userId;
 
     public ChatParticipantKey() {
+    }
 
+    public ChatParticipantKey(Long chatId) {
+        this.chatId = chatId;
     }
 
     public ChatParticipantKey(Long chatId, Long userId) {
