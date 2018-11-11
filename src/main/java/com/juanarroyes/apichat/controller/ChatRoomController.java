@@ -6,7 +6,6 @@ import com.juanarroyes.apichat.model.ChatParticipant;
 import com.juanarroyes.apichat.model.Room;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.*;
-import com.juanarroyes.apichat.response.RoomCreationResponse;
 import com.juanarroyes.apichat.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package com.juanarroyes.apichat.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.juanarroyes.apichat.repository.ChatRepository;
 
 public class ChatRequest {
 
