@@ -54,4 +54,7 @@ dependencies {
 
     // SpringBoot Unit Test
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    // H2 embedded database
+    testCompile("com.h2database:h2")
 }

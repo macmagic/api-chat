@@ -27,7 +27,10 @@
                 {
                   "column" : {
                     "name" : "id",
-                    "type" : "bigint"
+                    "type" : "bigint",
+                    "constraints" : {
+                      "nullable": false
+                    }
                   }
                 },
                 {

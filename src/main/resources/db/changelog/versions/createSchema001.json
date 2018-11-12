@@ -1,0 +1,16 @@
+{
+  "databaseChangeLog" : [
+    {
+      "changeSet" : {
+        "id" : "create-schema-H2",
+        "author" : "jarroyes",
+        "context" : "test",
+        "changes" : [
+          {
+
+          }
+        ]
+      }
+    }
+  ]
+}
