@@ -7,10 +7,33 @@ app:
   jwtExpirationInMs: 86400000
 
 spring:
+  jackson:
+    serialization:
+      indent_output: true
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL;INIT=CREATE SCHEMA IF NOT EXISTS APICHAT
-    username: apichat
-    password: temporal
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS APICHAT
+    username: sa
+    password:
+    generate-unique-name: true
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        id:
+          new_generator_mappings: false
+    generate-ddl: true
   liquibase:
-    contexts: test,
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS APICHAT
+    user: sa
+    password:
     default-schema: apichat
+  profiles:
+    active: test
