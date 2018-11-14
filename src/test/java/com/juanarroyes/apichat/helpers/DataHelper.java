@@ -107,6 +107,10 @@ public class DataHelper {
         return refreshToken;
     }
 
+    /**
+     *
+     * @return
+     */
     public static Chat getPrivateChat() {
         Chat chat = new Chat();
         chat.setPrivate(true);
@@ -116,9 +120,42 @@ public class DataHelper {
         return chat;
     }
 
+    public static Chat getChatRoom(Room room) {
+        Chat chat = new Chat();
+        chat.setPrivate(false);
+        chat.setIsRoom(true);
+        chat.setRoom(room);
+        chat.setSessionId(CHAT_SESSION_ID);
+        chat.setCreated(STATIC_NOW);
+        return chat;
+    }
+
+
+
+    /**
+     *
+     * @param chat
+     * @param user
+     * @param isAdmin
+     * @return
+     */
+    public static ChatParticipant getChatParticipant(Chat chat, User user, boolean isAdmin) {
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
+        ChatParticipant chatParticipant = new ChatParticipant();
+        chatParticipant.setId(id);
+        chatParticipant.setAdmin(isAdmin);
+        chatParticipant.setCreated(STATIC_NOW);
+        return chatParticipant;
+    }
+
+    /**
+     *
+     * @param chat
+     * @param user
+     * @return
+     */
     public static Message getRandomMessage(Chat chat, User user) {
         Message message = new Message();
-
         String random = String.valueOf(new Random().nextInt(1000));
         message.setMessageText(MESSAGE_TEXT.replace("{id}", random));
         message.setAuthorId(user.getId());
