@@ -31,8 +31,6 @@ public class MessageRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    private Message message;
-
     private User user;
 
     private Chat chat;
@@ -55,7 +53,7 @@ public class MessageRepositoryTest {
 
     @Test
     public void testFindByChatId() {
-        message = DataHelper.getRandomMessage(chat, user);
+        Message message = DataHelper.getRandomMessage(chat, user);
         entityManager.persist(message);
         message = DataHelper.getRandomMessage(chat, user);
         entityManager.persist(message);
