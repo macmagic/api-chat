@@ -31,6 +31,8 @@ public class DataHelper {
 
     private static final String MESSAGE_TEXT = "Hello number {id}";
 
+    private static final int CONTACT_STATUS_FRIEND = 2;
+
     private static final Date STATIC_NOW = new Date();
 
     /**
@@ -105,6 +107,15 @@ public class DataHelper {
         refreshToken.setToken(REFRESH_TOKEN);
         refreshToken.setExpirationTime(Instant.now().plus(30, ChronoUnit.DAYS));
         return refreshToken;
+    }
+
+    public static ContactList getContactList(User userOwner, User userFriend) {
+        ContactList contactList = new ContactList();
+        contactList.setOwnerId(userOwner.getId());
+        contactList.setContactId(userFriend.getId());
+        contactList.setStatus(CONTACT_STATUS_FRIEND);
+        contactList.setCreated(STATIC_NOW);
+        return contactList;
     }
 
     /**

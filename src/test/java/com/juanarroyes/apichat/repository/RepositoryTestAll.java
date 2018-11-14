@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ChatParticipantRepositoryTest.class,
+        ContactListRepositoryTest.class,
         MessageRepositoryTest.class,
         RefreshTokenRepositoryTest.class,
         UserProfileRepositoryTest.class,
