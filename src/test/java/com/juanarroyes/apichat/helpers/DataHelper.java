@@ -1,10 +1,10 @@
 package com.juanarroyes.apichat.helpers;
 
-import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.model.UserProfile;
-import com.juanarroyes.apichat.model.UserProfileKey;
-import com.juanarroyes.apichat.model.UserRequest;
+import com.juanarroyes.apichat.model.*;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -22,8 +22,21 @@ public class DataHelper {
     private static final String USER_PROFILE_LOCATION = "Springfield";
     private static final String USER_PROFILE_PHONE = "555-44-33-22";
 
+    private static final String ROOM_NAME = "Test room {id}";
+    private static final String ROOM_MESSAGE_BROADCAST = "This is a room test!";
+
+    private static final String REFRESH_TOKEN = "0e6ceebb-1304-47d5-b3cc-f69faf5bb44d";
+
+    private static final String CHAT_SESSION_ID = "gPLgJBjF0cbMIPXQyOoi98fSLHuuOKctQeoZRy9m";
+
+    private static final String MESSAGE_TEXT = "Hello number {id}";
+
     private static final Date STATIC_NOW = new Date();
 
+    /**
+     *
+     * @return
+     */
     public static User getRandomUser() {
         User user = new User();
         String emailId = String.valueOf(new Random().nextInt(1000));
@@ -34,6 +47,12 @@ public class DataHelper {
         return user;
     }
 
+    /**
+     *
+     * @param userOwner
+     * @param userDemand
+     * @return
+     */
     public static UserRequest getUserRequest(User userOwner, User userDemand) {
         UserRequest userRequest = new UserRequest();
         userRequest.setUser(userOwner);
@@ -42,6 +61,11 @@ public class DataHelper {
         return userRequest;
     }
 
+    /**
+     *
+     * @param user
+     * @return
+     */
     public static UserProfile getUserProfile(User user) {
         UserProfile userProfile = new UserProfile();
         UserProfileKey userProfileKey = new UserProfileKey(user);
@@ -58,4 +82,48 @@ public class DataHelper {
         return userProfile;
     }
 
+    /**
+     *
+     * @return
+     */
+    public static Room getRandomRoom() {
+        Room room = new Room();
+        room.setRoomName(ROOM_NAME);
+        room.setRoomMessageBroadcast(ROOM_MESSAGE_BROADCAST);
+        room.setCreated(STATIC_NOW);
+        return room;
+    }
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public static RefreshToken getRefreshToken(User user) {
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setToken(REFRESH_TOKEN);
+        refreshToken.setExpirationTime(Instant.now().plus(30, ChronoUnit.DAYS));
+        return refreshToken;
+    }
+
+    public static Chat getPrivateChat() {
+        Chat chat = new Chat();
+        chat.setPrivate(true);
+        chat.setIsRoom(false);
+        chat.setSessionId(CHAT_SESSION_ID);
+        chat.setCreated(STATIC_NOW);
+        return chat;
+    }
+
+    public static Message getRandomMessage(Chat chat, User user) {
+        Message message = new Message();
+
+        String random = String.valueOf(new Random().nextInt(1000));
+        message.setMessageText(MESSAGE_TEXT.replace("{id}", random));
+        message.setAuthorId(user.getId());
+        message.setChatId(chat.getId());
+        message.setCreated(STATIC_NOW);
+        return message;
+    }
 }

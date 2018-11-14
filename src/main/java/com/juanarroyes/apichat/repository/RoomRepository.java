@@ -9,6 +9,4 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    @Query(value = "SELECT r.* FROM room r INNER JOIN chat c ON c.room_id = r.id INNER JOIN chat_participant cha ON cha.chat_id = c.id WHERE cha.user_id = :user_id", nativeQuery = true)
-    List<Room> findAllRoomsByUser(@Param("user_id") Long userId);
 }

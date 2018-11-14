@@ -1,7 +1,8 @@
 package com.juanarroyes.apichat.repository;
 
 import com.juanarroyes.apichat.helpers.DataHelper;
-import com.juanarroyes.apichat.model.RefreshToken;
+import com.juanarroyes.apichat.model.Chat;
+import com.juanarroyes.apichat.model.Message;
 import com.juanarroyes.apichat.model.User;
 import org.junit.After;
 import org.junit.Before;
@@ -13,32 +14,38 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Optional;
+import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @DataJpaTest
-public class RefreshTokenRepositoryTest {
+public class MessageRepositoryTest {
+
+    private static final int EXPECTED_MESSAGES_COUNT = 3;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private MessageRepository messageRepository;
 
     @Autowired
     private TestEntityManager entityManager;
 
-    private RefreshToken refreshToken;
+    private Message message;
 
     private User user;
+
+    private Chat chat;
 
     @Before
     public void init() {
         user = DataHelper.getRandomUser();
         Long userId = (Long) entityManager.persistAndGetId(user);
         user.setId(userId);
-        this.refreshToken = DataHelper.getRefreshToken(user);
+
+        chat = DataHelper.getPrivateChat();
+        Long chatId = (Long) entityManager.persistAndGetId(chat);
+        chat.setId(chatId);
     }
 
     @After
@@ -47,11 +54,15 @@ public class RefreshTokenRepositoryTest {
     }
 
     @Test
-    public void testDeleteByUserId() {
-        entityManager.persist(refreshToken);
-        refreshTokenRepository.deleteByUserId(user.getId());
-        Optional<RefreshToken> result = refreshTokenRepository.findById(refreshToken.getToken());
-        assertFalse(result.isPresent());
-    }
+    public void testFindByChatId() {
+        message = DataHelper.getRandomMessage(chat, user);
+        entityManager.persist(message);
+        message = DataHelper.getRandomMessage(chat, user);
+        entityManager.persist(message);
+        message = DataHelper.getRandomMessage(chat, user);
+        entityManager.persist(message);
 
+        List<Message> result = messageRepository.findByChatId(chat.getId());
+        assertEquals(EXPECTED_MESSAGES_COUNT, result.size());
+    }
 }

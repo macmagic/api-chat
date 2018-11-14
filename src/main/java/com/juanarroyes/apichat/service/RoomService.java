@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface RoomService {
 
-    List<Room> getRoomsByUser(User user);
-
     Room createRoom(String roomName, String roomMessage);
 
     Room getRoomById(Long id) throws RoomNotFoundException;

@@ -9,5 +9,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Stri
 
     @Modifying
     @Transactional
-    Integer deleteByUserId(Long userId);
+    void deleteByUserId(Long userId);
 }

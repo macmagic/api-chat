@@ -22,11 +22,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> getRoomsByUser(User user) {
-        return roomRepository.findAllRoomsByUser(user.getId());
-    }
-
-    @Override
     public Room createRoom(String roomName, String roomMessage) {
         Room room = new Room();
         room.setRoomName(roomName);
