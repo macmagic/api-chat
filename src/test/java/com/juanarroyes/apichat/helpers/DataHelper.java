@@ -122,7 +122,7 @@ public class DataHelper {
      *
      * @return
      */
-    public static Chat getPrivateChat() {
+    public static Chat getChatPrivate() {
         Chat chat = new Chat();
         chat.setPrivate(true);
         chat.setIsRoom(false);
@@ -141,7 +141,9 @@ public class DataHelper {
         return chat;
     }
 
-
+    public static ChatParticipant getChatParticipant(Chat chat, User user) {
+        return getChatParticipant(chat, user, false);
+    }
 
     /**
      *

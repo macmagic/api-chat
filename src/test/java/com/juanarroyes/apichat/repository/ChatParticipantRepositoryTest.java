@@ -40,11 +40,7 @@ public class ChatParticipantRepositoryTest {
 
     private User user3;
 
-    private Room room;
-
     private Chat chatRoom;
-
-    private ChatParticipant chatParticipant;
 
     @Before
     public void init() {
@@ -60,7 +56,7 @@ public class ChatParticipantRepositoryTest {
         userId = (Long) entityManager.persistAndGetId(user3);
         user3.setId(userId);
 
-        room = DataHelper.getRandomRoom();
+        Room room = DataHelper.getRandomRoom();
         Long roomId = (Long) entityManager.persistAndGetId(room);
         room.setId(roomId);
 

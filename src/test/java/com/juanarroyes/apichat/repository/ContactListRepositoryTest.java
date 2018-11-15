@@ -40,16 +40,13 @@ public class ContactListRepositoryTest {
     @Before
     public void init() {
         userOwner = DataHelper.getRandomUser();
-        Long userId = (Long) entityManager.persistAndGetId(userOwner);
-        userOwner.setId(userId);
+        entityManager.persist(userOwner);
 
         userFriend1 = DataHelper.getRandomUser();
-        userId = (Long) entityManager.persistAndGetId(userFriend1);
-        userFriend1.setId(userId);
+        entityManager.persist(userFriend1);
 
         userFriend2 = DataHelper.getRandomUser();
-        userId = (Long) entityManager.persistAndGetId(userFriend2);
-        userFriend2.setId(userId);
+        entityManager.persist(userFriend2);
     }
 
     @After
@@ -60,16 +57,16 @@ public class ContactListRepositoryTest {
     @Test
     public void testFindByIdAndOwnerId() {
         ContactList contactList = DataHelper.getContactList(userOwner, userFriend1);
-        Long contactId = (Long) entityManager.persistAndGetId(contactList);
-        ContactList result = contactListRepository.findByIdAndOwnerId(contactId, userOwner.getId());
+        entityManager.persist(contactList);
+        ContactList result = contactListRepository.findByIdAndOwnerId(contactList.getId(), userOwner.getId());
         assertNotNull(result);
     }
 
     @Test
     public void testFindByOwnerIdAndContactId() {
         ContactList contactList = DataHelper.getContactList(userOwner, userFriend2);
-        Long contactId = (Long) entityManager.persistAndGetId(contactList);
-        ContactList result = contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), contactId);
+        entityManager.persist(contactList);
+        ContactList result = contactListRepository.findByOwnerIdAndContactId(userOwner.getId(), contactList.getContactId());
         assertNotNull(result);
     }
 

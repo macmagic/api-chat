@@ -41,7 +41,7 @@ public class MessageRepositoryTest {
         Long userId = (Long) entityManager.persistAndGetId(user);
         user.setId(userId);
 
-        chat = DataHelper.getPrivateChat();
+        chat = DataHelper.getChatPrivate();
         Long chatId = (Long) entityManager.persistAndGetId(chat);
         chat.setId(chatId);
     }
