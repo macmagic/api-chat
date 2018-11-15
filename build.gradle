@@ -57,4 +57,7 @@ dependencies {
 
     // H2 embedded database
     testCompile("com.h2database:h2")
+
+    // Spring RestDocs
+    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
