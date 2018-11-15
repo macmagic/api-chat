@@ -45,24 +45,19 @@ public class ChatParticipantRepositoryTest {
     @Before
     public void init() {
         user1 = DataHelper.getRandomUser();
-        Long userId = (Long) entityManager.persistAndGetId(user1);
-        user1.setId(userId);
+        entityManager.persist(user1);
 
         user2 = DataHelper.getRandomUser();
-        userId = (Long) entityManager.persistAndGetId(user2);
-        user2.setId(userId);
+        entityManager.persist(user2);
 
         user3 = DataHelper.getRandomUser();
-        userId = (Long) entityManager.persistAndGetId(user3);
-        user3.setId(userId);
+        entityManager.persist(user3);
 
         Room room = DataHelper.getRandomRoom();
-        Long roomId = (Long) entityManager.persistAndGetId(room);
-        room.setId(roomId);
+        entityManager.persist(room);
 
         chatRoom = DataHelper.getChatRoom(room);
-        Long chatId = (Long) entityManager.persistAndGetId(chatRoom);
-        chatRoom.setId(chatId);
+        entityManager.persist(chatRoom);
     }
 
     @After

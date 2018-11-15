@@ -50,8 +50,7 @@ public class UserRepositoryTest {
     @Before
     public void init() {
         user = DataHelper.getRandomUser();
-        Long userId = (Long) entityManager.persistAndGetId(user);
-        user.setId(userId);
+        entityManager.persist(user);
     }
 
     @After

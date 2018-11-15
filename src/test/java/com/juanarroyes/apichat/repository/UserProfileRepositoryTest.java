@@ -36,8 +36,7 @@ public class UserProfileRepositoryTest {
     @Before
     public void init() {
         user = DataHelper.getRandomUser();
-        Long userId = (Long) entityManager.persistAndGetId(user);
-        user.setId(userId);
+        entityManager.persist(user);
         userProfile = DataHelper.getUserProfile(user);
     }
 

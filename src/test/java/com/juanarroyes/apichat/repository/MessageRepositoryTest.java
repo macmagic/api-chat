@@ -38,12 +38,10 @@ public class MessageRepositoryTest {
     @Before
     public void init() {
         user = DataHelper.getRandomUser();
-        Long userId = (Long) entityManager.persistAndGetId(user);
-        user.setId(userId);
+        entityManager.persist(user);
 
         chat = DataHelper.getChatPrivate();
-        Long chatId = (Long) entityManager.persistAndGetId(chat);
-        chat.setId(chatId);
+        entityManager.persist(chat);
     }
 
     @After

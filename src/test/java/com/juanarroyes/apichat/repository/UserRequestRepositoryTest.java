@@ -77,15 +77,13 @@ public class UserRequestRepositoryTest {
         user.setEmail(TEST_USER_EMAIL);
         user.setPassword(TEST_USER_PASSWORD);
         user.setStatus(TEST_USER_STATUS);
-        Long userId = (Long) entityManager.persistAndGetId(user);
-        user.setId(userId);
+        entityManager.persist(user);
 
         userRequested = new User();
         userRequested.setEmail(TEST_USER_REQUESTED_EMAIL);
         userRequested.setPassword(TEST_USER_REQUESTED_PASSWORD);
         userRequested.setStatus(TEST_USER_STATUS);
-        Long userRequestedId = (Long) entityManager.persistAndGetId(userRequested);
-        userRequested.setId(userRequestedId);
+        entityManager.persist(userRequested);
     }
 
     private void setUserRequest() {
@@ -93,7 +91,7 @@ public class UserRequestRepositoryTest {
         userRequest.setUser(userRequested);
         userRequest.setUserRequest(user);
         userRequest.setCreated(new Date());
-        Long userRequestId = (Long) entityManager.persistAndGetId(userRequest);
-        userRequest.setRequestId(userRequestId);
+        entityManager.persist(userRequest);
+        userRequest.setRequestId(userRequest.getRequestId());
     }
 }
