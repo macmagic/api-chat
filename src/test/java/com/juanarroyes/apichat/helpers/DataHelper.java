@@ -31,6 +31,8 @@ public class DataHelper {
 
     private static final String MESSAGE_TEXT = "Hello number {id}";
 
+    private static final int CONTACT_STATUS_FRIEND = 2;
+
     private static final Date STATIC_NOW = new Date();
 
     /**
@@ -107,6 +109,15 @@ public class DataHelper {
         return refreshToken;
     }
 
+    public static ContactList getContactList(User userOwner, User userFriend) {
+        ContactList contactList = new ContactList();
+        contactList.setOwnerId(userOwner.getId());
+        contactList.setContactId(userFriend.getId());
+        contactList.setStatus(CONTACT_STATUS_FRIEND);
+        contactList.setCreated(STATIC_NOW);
+        return contactList;
+    }
+
     /**
      *
      * @return
@@ -120,6 +131,18 @@ public class DataHelper {
         return chat;
     }
 
+    public static Chat getChatRoom(Room room) {
+        Chat chat = new Chat();
+        chat.setPrivate(false);
+        chat.setIsRoom(true);
+        chat.setRoom(room);
+        chat.setSessionId(CHAT_SESSION_ID);
+        chat.setCreated(STATIC_NOW);
+        return chat;
+    }
+
+
+
     /**
      *
      * @param chat
@@ -127,10 +150,10 @@ public class DataHelper {
      * @param isAdmin
      * @return
      */
-    public static ChatParticipant chatParticipant(Chat chat, User user, boolean isAdmin) {
+    public static ChatParticipant getChatParticipant(Chat chat, User user, boolean isAdmin) {
+        ChatParticipantKey id = new ChatParticipantKey(chat.getId(), user.getId());
         ChatParticipant chatParticipant = new ChatParticipant();
-        ChatParticipantKey key = new ChatParticipantKey(chat.getId(), user.getId());
-        chatParticipant.setId(key);
+        chatParticipant.setId(id);
         chatParticipant.setAdmin(isAdmin);
         chatParticipant.setCreated(STATIC_NOW);
         return chatParticipant;
