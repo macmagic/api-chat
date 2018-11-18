@@ -3,6 +3,9 @@ package com.juanarroyes.apichat.controller;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.security.UserPrincipal;
+import com.juanarroyes.apichat.service.CustomUserDetailsService;
+import com.juanarroyes.apichat.service.UserService;
+import com.juanarroyes.apichat.service.UserServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -21,6 +24,9 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -29,20 +35,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class AuthControllerTest extends AbstractControllerTest {
 
-    /*@Test(expected = JsonMappingException.class)
+    @Test(expected = JsonMappingException.class)
     public void testRegisterUser() throws Exception {
 
+        CustomUserDetailsService mockCustomUserDetailsService = mock(CustomUserDetailsService.class);
+        UserServiceImpl mockUserService = mock(UserServiceImpl.class);
 
+        when(mockCustomUserDetailsService.loadUserByUsername(anyString())).thenReturn(UserPrincipal.create(generateUser()));
+        when(mockUserService.createUser(anyString(), anyString())).thenReturn(generateUser());
 
-
-        User appUser = generateUser();
+/*        User appUser = generateUser();
         UserPrincipal userPrincipal = UserPrincipal.create(appUser);
         Authentication authentication = Mockito.mock(Authentication.class);
         Mockito.when(authenticationManager.authenticate(any())).thenReturn(authentication);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        Mockito.when(authentication.getPrincipal()).thenReturn(userPrincipal);
+        Mockito.when(authentication.getPrincipal()).thenReturn(userPrincipal);*/
 
 
         //Mockito.when(tokenService.generateToken(userPrincipal)).thenReturn()
@@ -51,6 +60,6 @@ public class AuthControllerTest extends AbstractControllerTest {
                 .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD+"\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
-    }*/
+    }
 
 }

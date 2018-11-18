@@ -79,8 +79,10 @@ public abstract class AbstractControllerTest {
 
         Mockito.when(userRepository.save(any(User.class))).thenReturn(generateUser());
 
+
+
         //userRepository.findByEmail
-        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(generateUser());
 
         //Mockito.when(userService.createUser(Mockito.any(), Mockito.any())).thenReturn(DataHelper.getRandomUser());
     }
