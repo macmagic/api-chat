@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.swing.text.html.Option;
@@ -68,6 +69,9 @@ public abstract class AbstractControllerTest {
     @Autowired
     protected UserService userService;
 
+    @Autowired
+    protected AuthenticationManager authenticationManager;
+
     @Before
     public void setUpMocks () throws UserAlreadyExistException {
         //userProfileRepository.findByUserId
@@ -87,7 +91,7 @@ public abstract class AbstractControllerTest {
         return Optional.of(DataHelper.getUserProfile(user));
     }
 
-    private static User generateUser() {
+    public static User generateUser() {
         User user = new User();
         user.setId(1000L);
         user.setEmail(USER_EMAIL);
