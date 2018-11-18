@@ -60,4 +60,6 @@ dependencies {
 
     // Spring RestDocs
     testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
+
+    testCompile("org.springframework.security:spring-security-test")
 }

@@ -1,5 +1,7 @@
 package com.juanarroyes.apichat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.helpers.DataHelper;
 import com.juanarroyes.apichat.model.*;
 import com.juanarroyes.apichat.repository.*;
@@ -13,11 +15,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.swing.text.html.Option;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 public abstract class AbstractControllerTest {
+
+    protected static final String USER_EMAIL = "testuser@example.com";
+    protected static final String USER_PASSWORD = "1234password";
 
     @Autowired
     protected MockMvc mockMvc;
@@ -62,14 +69,31 @@ public abstract class AbstractControllerTest {
     protected UserService userService;
 
     @Before
-    public void setUpMocks () {
+    public void setUpMocks () throws UserAlreadyExistException {
         //userProfileRepository.findByUserId
         Mockito.when(userProfileRepository.findByUserId(any(UserProfileKey.class))).thenReturn(getUserProfile());
+
+        Mockito.when(userRepository.save(any(User.class))).thenReturn(generateUser());
+
+        //userRepository.findByEmail
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(null);
+
+        //Mockito.when(userService.createUser(Mockito.any(), Mockito.any())).thenReturn(DataHelper.getRandomUser());
     }
 
     private static Optional<UserProfile> getUserProfile() {
         User user = DataHelper.getRandomUser();
         user.setId(10000L);
         return Optional.of(DataHelper.getUserProfile(user));
+    }
+
+    private static User generateUser() {
+        User user = new User();
+        user.setId(1000L);
+        user.setEmail(USER_EMAIL);
+        user.setPassword(USER_PASSWORD);
+        user.setStatus(1);
+        user.setCreated(new Date());
+        return user;
     }
 }

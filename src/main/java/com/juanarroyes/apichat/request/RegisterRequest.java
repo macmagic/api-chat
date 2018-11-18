@@ -1,10 +1,16 @@
 package com.juanarroyes.apichat.request;
 
-public class RegisterRequest {
+import java.io.Serializable;
+
+public class RegisterRequest implements Serializable{
 
     private String email;
 
     private String password;
+
+    public RegisterRequest() {
+
+    }
 
     public RegisterRequest(String email, String password) {
         this.email = email;
