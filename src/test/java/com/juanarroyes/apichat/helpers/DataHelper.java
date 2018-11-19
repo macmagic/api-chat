@@ -175,4 +175,9 @@ public class DataHelper {
         message.setCreated(STATIC_NOW);
         return message;
     }
+
+    public static Long getRandomId() {
+        Long randomId = new Random().nextLong();
+        return randomId;
+    }
 }

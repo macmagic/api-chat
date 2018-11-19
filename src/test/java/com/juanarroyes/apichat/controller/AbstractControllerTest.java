@@ -1,5 +1,7 @@
 package com.juanarroyes.apichat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.juanarroyes.apichat.exception.ContactListNotFoundException;
 import com.juanarroyes.apichat.exception.UserAlreadyExistException;
 import com.juanarroyes.apichat.helpers.DataHelper;
 import com.juanarroyes.apichat.model.*;
@@ -95,8 +97,11 @@ public abstract class AbstractControllerTest {
     @Autowired
     protected RoomServiceImpl roomService;
 
+    @Autowired
+    protected ObjectMapper objectMapper;
+
     @Before
-    public void setUpMocks() throws UserAlreadyExistException {
+    public void setUpMocks() throws UserAlreadyExistException, ContactListNotFoundException {
 
         Mockito.when(customUserDetailsService.loadUserById(anyLong())).thenReturn(UserPrincipal.create(generateUser()));
 

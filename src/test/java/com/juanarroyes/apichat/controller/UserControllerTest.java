@@ -34,7 +34,6 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void testCreateProfile () throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         UserProfileRequest userProfileRequest = new UserProfileRequest();
         userProfileRequest.setFirstname("Pepe");
         userProfileRequest.setLastname("Navarro");
