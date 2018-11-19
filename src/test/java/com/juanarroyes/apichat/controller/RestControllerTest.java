@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        AuthControllerTest.class
+        AuthControllerTest.class,
+        UserControllerTest.class
 })
 public class RestControllerTest {
 }

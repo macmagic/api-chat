@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.activation.DataHandler;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +67,34 @@ public class UserControllerTest extends AbstractControllerTest {
         Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
         Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenThrow(new UserProfileNotFoundException()).thenReturn(null);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetProfileByUser () throws Exception {
+        Long userId = 20000L;
+        User user = DataHelper.getRandomUser();
+        user.setId(userId);
+        Mockito.when(userService.getUser(anyLong())).thenReturn(user);
+        Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenReturn(DataHelper.getUserProfile(user));
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile/id/"+20000)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetProfileByUserNotFound () throws Exception {
+        Long userId = 20000L;
+        User user = DataHelper.getRandomUser();
+        user.setId(userId);
+        Mockito.when(userService.getUser(anyLong())).thenReturn(user);
+        Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenThrow(new UserProfileNotFoundException()).thenReturn(null);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile/id/"+20000)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
