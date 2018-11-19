@@ -20,11 +20,18 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     *
+     * @param email
+     * @param passwordHash
+     * @return
+     * @throws UserAlreadyExistException
+     */
     public User createUser(String email, String passwordHash) throws UserAlreadyExistException {
 
-        User userFound = userRepository.findByEmail(email);
+        boolean userExists = userRepository.existsByEmail(email);
 
-        if(userFound != null){
+        if(userExists){
             throw new UserAlreadyExistException("User already exists with this email");
         }
 

@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.Random;
 
 public class DataHelper {
-
     private static final String USER_EMAIL = "email{id}@example.com";
     private static final String USER_PASSWORD = "$31$16$BU_GMoncEDZzyGcB34AlC6LIKngxtcL4whKbRNpdFRA";
     private static final int USER_STATUS = 1;

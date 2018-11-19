@@ -1,11 +1,5 @@
 package com.juanarroyes.apichat.controller;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.security.UserPrincipal;
-import com.juanarroyes.apichat.service.CustomUserDetailsService;
-import com.juanarroyes.apichat.service.UserService;
-import com.juanarroyes.apichat.service.UserServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -13,20 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -35,31 +21,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class AuthControllerTest extends AbstractControllerTest {
 
-    @Test(expected = JsonMappingException.class)
+    @Test
     public void testRegisterUser() throws Exception {
-
-        CustomUserDetailsService mockCustomUserDetailsService = mock(CustomUserDetailsService.class);
-        UserServiceImpl mockUserService = mock(UserServiceImpl.class);
-
-        when(mockCustomUserDetailsService.loadUserByUsername(anyString())).thenReturn(UserPrincipal.create(generateUser()));
-        when(mockUserService.createUser(anyString(), anyString())).thenReturn(generateUser());
-
-/*        User appUser = generateUser();
-        UserPrincipal userPrincipal = UserPrincipal.create(appUser);
-        Authentication authentication = Mockito.mock(Authentication.class);
-        Mockito.when(authenticationManager.authenticate(any())).thenReturn(authentication);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        Mockito.when(authentication.getPrincipal()).thenReturn(userPrincipal);*/
-
-
-        //Mockito.when(tokenService.generateToken(userPrincipal)).thenReturn()
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD+"\"}")
+                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
     }
 
+    @Test
+    public void testRegisterUserAreRegistered() throws Exception {
+        Mockito.when(userService.existsByEmail(anyString())).thenReturn(true);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isConflict());
+    }
+
+    @Test
+    public void testBadParamsRegisterUser() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \""+USER_EMAIL+"\", \"password2\":\""+USER_PASSWORD_RAW+"\"}")
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testLoginUser() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isOk());
+    }
+
+    @Test
+    public void testRefreshToken() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/login")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+        mockMvc.perform(requestBuilder).andExpect(status().isOk());
+    }
 }
