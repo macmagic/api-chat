@@ -7,6 +7,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         AuthControllerTest.class,
         ChatControllerTest.class,
+        ChatRoomControllerTest.class,
+        MessageControllerTest.class,
+        RequestControllerTest.class,
         UserControllerTest.class
 })
 public class RestControllerTest {

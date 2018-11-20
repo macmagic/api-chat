@@ -101,8 +101,8 @@ public class RequestController extends BaseController {
         return new ResponseEntity(httpStatus);
     }
 
-    @DeleteMapping
-    public ResponseEntity deleteRequest(@Valid @RequestBody Long requestId, HttpServletRequest request) {
+    @DeleteMapping("/{request_id}")
+    public ResponseEntity deleteRequest(@PathVariable("request_id") Long requestId) {
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
