@@ -46,11 +46,7 @@ public class DataHelper {
 
     private static final int CONTACT_STATUS_FRIEND = 2;
 
-    private static final int LIST_MESSAGES_COUNT = 10;
-
-    private static final int LIST_USER_REQUEST_COUNT = 5;
-
-    private static final int LIST_CHAT_ROOMS_COUNT = 10;
+    private static final int LIST_STATIC_COUNT = 10;
 
     private static final Date STATIC_NOW = new Date();
 
@@ -125,7 +121,7 @@ public class DataHelper {
         List<UserRequest> userRequestList = new ArrayList<>();
 
         User userOwner = getRandomUser(new Random().nextLong());
-        for(int i = 0; i < LIST_USER_REQUEST_COUNT; i++) {
+        for(int i = 0; i < LIST_STATIC_COUNT; i++) {
             userRequestList.add(getUserRequest(userOwner, getRandomUser(new Random().nextLong())));
         }
         return userRequestList;
@@ -196,6 +192,15 @@ public class DataHelper {
         return contactList;
     }
 
+    public static List<ContactList> getListOfContacts() {
+        List<ContactList> contacts = new ArrayList<>();
+        User user = getRandomUser(1000L);
+        for(int i = 0; i < LIST_STATIC_COUNT; i++) {
+            contacts.add(getContactList(user, getRandomUser(new Random().nextLong())));
+        }
+        return contacts;
+    }
+
     public static Chat getChatPrivate() {
         return getChatPrivate(null);
     }
@@ -232,7 +237,7 @@ public class DataHelper {
     public static List<Chat> getListOfChatRooms() {
         List<Chat> chatRoomList = new ArrayList<>();
 
-        for(int i = 0; i < LIST_CHAT_ROOMS_COUNT; i++) {
+        for(int i = 0; i < LIST_STATIC_COUNT; i++) {
             Room room = getRandomRoom(new Random().nextLong());
             Chat chat = getChatRoom(room, new Random().nextLong());
             chatRoomList.add(chat);
@@ -261,6 +266,16 @@ public class DataHelper {
         return chatParticipant;
     }
 
+    public static List<ChatParticipant> getListOfChatParticipant() {
+        Chat chat = getChatRoom(getRandomRoom(new Random().nextLong()));
+        List<ChatParticipant> chatParticipantList = new ArrayList<>();
+
+        for(int i = 0; i < LIST_STATIC_COUNT; i++) {
+            chatParticipantList.add(DataHelper.getChatParticipant(chat, DataHelper.getRandomUser(new Random().nextLong())));
+        }
+        return chatParticipantList;
+    }
+
     public static Message getRandomMessage(Chat chat, User user) {
         return getRandomMessage(chat, user, null);
     }
@@ -284,7 +299,7 @@ public class DataHelper {
     public static List<Message> getListOfRandomMessage(Chat chat) {
         List<Message> messageList = new ArrayList<>();
 
-        for(int i = 0; i < LIST_MESSAGES_COUNT; i++) {
+        for(int i = 0; i < LIST_STATIC_COUNT; i++) {
             messageList.add(getRandomMessage(chat, getRandomUser(new Random().nextLong())));
         }
         return messageList;

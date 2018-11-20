@@ -24,8 +24,8 @@ public class UsersRoomRequest {
         return chatRoomId;
     }
 
-    public void setChatRoomId(Long roomId) {
-        this.chatRoomId = roomId;
+    public void setChatRoomId(Long chatId) {
+        this.chatRoomId = chatId;
     }
 
     public List<Long> getUsers() {

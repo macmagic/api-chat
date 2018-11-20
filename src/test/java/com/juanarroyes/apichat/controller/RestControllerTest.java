@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
         AuthControllerTest.class,
         ChatControllerTest.class,
         ChatRoomControllerTest.class,
+        ContactControllerTest.class,
         MessageControllerTest.class,
         RequestControllerTest.class,
         UserControllerTest.class

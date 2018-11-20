@@ -31,6 +31,8 @@ public abstract class AbstractControllerTest {
     protected static final Long USER_TOKEN_EXPIRATION = 86400000L;
     protected static final String USER_REFRESH_TOKEN = "f76224c9-643c-47ba-a416-d6cb01305960";
 
+    protected boolean authRequired = false;
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -102,6 +104,10 @@ public abstract class AbstractControllerTest {
 
     @Before
     public void setUpMocks() throws UserAlreadyExistException, ContactListNotFoundException {
+
+        if(authRequired) {
+
+        }
 
         Mockito.when(customUserDetailsService.loadUserById(anyLong())).thenReturn(UserPrincipal.create(generateUser()));
 
