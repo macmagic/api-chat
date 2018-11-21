@@ -32,6 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class UserControllerTest extends AbstractControllerTest {
 
+    public UserControllerTest() {
+        authRequired = true;
+    }
+
     @Test
     public void testCreateProfile () throws Exception {
         UserProfileRequest userProfileRequest = new UserProfileRequest();

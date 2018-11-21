@@ -1,6 +1,7 @@
 package com.juanarroyes.apichat.helpers;
 
 import com.juanarroyes.apichat.model.*;
+import com.juanarroyes.apichat.request.RoomRequest;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -157,9 +158,11 @@ public class DataHelper {
      * @return
      */
     public static Room getRandomRoom(Long roomId) {
+
+        String roomNameId = String.valueOf(new Random().nextInt(1000));
         Room room = new Room();
         room.setId(roomId);
-        room.setRoomName(ROOM_NAME);
+        room.setRoomName(ROOM_NAME.replace("{id}", roomNameId));
         room.setRoomMessageBroadcast(ROOM_MESSAGE_BROADCAST);
         room.setCreated(STATIC_NOW);
         return room;
@@ -304,6 +307,24 @@ public class DataHelper {
         }
         return messageList;
     }
+
+    /**
+     *
+     * @return RoomRequest object
+     */
+    public static RoomRequest getRoomRequest() {
+        RoomRequest roomRequest = new RoomRequest();
+        String roomNameId = String.valueOf(new Random().nextInt(1000));
+        List<Long> users = new ArrayList<>();
+        users.add(new Random().nextLong());
+        users.add(new Random().nextLong());
+        users.add(new Random().nextLong());
+        roomRequest.setRoomName(ROOM_NAME.replace("{id}", roomNameId));
+        roomRequest.setUsersRoom(users);
+        return roomRequest;
+    }
+
+
 
     public static Long getRandomId() {
         Long randomId = new Random().nextLong();

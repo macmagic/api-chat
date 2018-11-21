@@ -26,11 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class ContactControllerTest extends AbstractControllerTest {
 
-    @Before
+    public ContactControllerTest() {
+        authRequired = true;
+    }
+
+    /*@Before
     public void setUp() throws UserNotFoundException {
         //Mock for obtain user from token
         Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
-    }
+    }*/
 
     @Test
     public void testGetContacts() throws Exception {

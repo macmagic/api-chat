@@ -37,22 +37,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class ChatRoomControllerTest extends AbstractControllerTest {
 
-    @Before
-    public void setUp() throws UserNotFoundException {
-        //Mock for obtain user from token
-        Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
+    public ChatRoomControllerTest() {
+        authRequired = true;
     }
+
+    /*@Before
+    public void setUp() throws UserNotFoundException {
+
+    }*/
 
     @Test
     public void testCreateRoom() throws Exception {
-        RoomRequest roomRequest = new RoomRequest();
-        List<Long> users = new ArrayList<>();
-        users.add(100L);
-        users.add(200L);
-        users.add(300L);
-        roomRequest.setRoomName("Test");
-        roomRequest.setUsersRoom(users);
         Room room = DataHelper.getRandomRoom(100L);
+        RoomRequest roomRequest = new RoomRequest();
+        List<Long> users = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L));
+        roomRequest.setRoomName(room.getRoomName());
+        roomRequest.setRoomMessage(room.getRoomMessageBroadcast());
+        roomRequest.setUsersRoom(users);
         Mockito.when(roomService.createRoom(anyString(), anyString())).thenReturn(room);
         Mockito.when(chatService.createRoomChat(any(Room.class), any(User.class), any(List.class))).thenReturn(DataHelper.getChatRoom(room, 100L));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/chatroom")
