@@ -27,6 +27,13 @@ public class Room implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
+    public Room() {}
+
+    public Room(String roomName, String roomMessageBroadcast) {
+        this.roomName = roomName;
+        this.roomMessageBroadcast = roomMessageBroadcast;
+    }
+
     public Long getId() {
         return id;
     }

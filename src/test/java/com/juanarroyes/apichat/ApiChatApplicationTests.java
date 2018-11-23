@@ -12,5 +12,4 @@ public class ApiChatApplicationTests {
     @Test
     public void contextLoads() {
     }
-
 }

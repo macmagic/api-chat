@@ -54,4 +54,12 @@ dependencies {
 
     // SpringBoot Unit Test
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    // H2 embedded database
+    testCompile("com.h2database:h2")
+
+    // Spring RestDocs
+    testCompile("org.springframework.restdocs:spring-restdocs-mockmvc")
+
+    testCompile("org.springframework.security:spring-security-test")
 }

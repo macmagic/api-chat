@@ -1,10 +1,7 @@
 package com.juanarroyes.apichat.exception;
 
 public class ChatUserIsTheSameException extends ApiChatException {
-
-    public ChatUserIsTheSameException() {
-
-    }
+    public ChatUserIsTheSameException() { }
 
     public ChatUserIsTheSameException(String message) {
         super(message);

@@ -148,7 +148,7 @@ public class UserController extends BaseController {
         try {
             User user = getUserFromToken();
             profile = userProfileService.createProfile(request, user);
-            httpStatus = HttpStatus.OK;
+            httpStatus = HttpStatus.CREATED;
         } catch (UserProfileAlreadyExistsException e) {
             httpStatus = HttpStatus.CONFLICT;
         } catch (Exception e) {

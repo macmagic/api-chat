@@ -65,8 +65,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest request){
-
+    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest request) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         AuthResponse response = null;
 
@@ -149,7 +148,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        String accessToken = tokenService .generateToken(userPrincipal);
+        String accessToken = tokenService.generateToken(userPrincipal);
         String refreshToken = tokenService.generateRefreshToken();
 
         try {
