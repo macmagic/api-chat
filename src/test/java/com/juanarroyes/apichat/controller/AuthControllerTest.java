@@ -1,10 +1,10 @@
 package com.juanarroyes.apichat.controller;
 
+import com.juanarroyes.apichat.helpers.DataHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,7 +25,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     public void testRegisterUser() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .content("{\"email\": \""+ DataHelper.getStaticUserEmail() +"\", \"password\":\""+ DataHelper.getStaticPassword() +"\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
     }
@@ -35,7 +35,7 @@ public class AuthControllerTest extends AbstractControllerTest {
         Mockito.when(userService.existsByEmail(anyString())).thenReturn(true);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .content("{\"email\": \"" + DataHelper.getStaticUserEmail() + "\", \"password\":\"" + DataHelper.getStaticPassword() + "\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isConflict());
     }
@@ -44,7 +44,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     public void testBadParamsRegisterUser() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/register")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password2\":\""+USER_PASSWORD_RAW+"\"}")
+                .content("{\"email\": \"" + DataHelper.getStaticUserEmail() + "\", \"password2\":\""+ DataHelper.getStaticPassword() + "\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
     }
@@ -53,7 +53,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     public void testLoginUser() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/login")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .content("{\"email\": \"" + DataHelper.getStaticUserEmail() + "\", \"password\":\"" + DataHelper.getStaticPassword() + "\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
@@ -62,7 +62,7 @@ public class AuthControllerTest extends AbstractControllerTest {
     public void testRefreshToken() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/auth/login")
                 .accept(MediaType.APPLICATION_JSON)
-                .content("{\"email\": \""+USER_EMAIL+"\", \"password\":\""+USER_PASSWORD_RAW+"\"}")
+                .content("{\"email\": \"" + DataHelper.getStaticUserEmail() + "\", \"password\":\"" + DataHelper.getStaticPassword() + "\"}")
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }

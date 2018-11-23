@@ -1,11 +1,9 @@
 package com.juanarroyes.apichat.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.juanarroyes.apichat.exception.UserProfileNotFoundException;
 import com.juanarroyes.apichat.helpers.DataHelper;
 import com.juanarroyes.apichat.helpers.TokenHelper;
 import com.juanarroyes.apichat.model.User;
-import com.juanarroyes.apichat.model.UserProfileKey;
 import com.juanarroyes.apichat.request.UserProfileRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,14 +11,10 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import javax.activation.DataHandler;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -49,7 +43,7 @@ public class UserControllerTest extends AbstractControllerTest {
         userProfileRequest.setPhone("55542454");
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/profile")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .content(objectMapper.writeValueAsString(userProfileRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
@@ -57,49 +51,45 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void testGetProfile () throws Exception {
-        Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenReturn(DataHelper.getUserProfile(generateUser()));
+        Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenReturn(DataHelper.getUserProfile(DataHelper.getRandomUser(1000L)));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
     @Test
     public void testGetProfileNotFound () throws Exception {
-        Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
+        Mockito.when(userService.getUser(anyLong())).thenReturn(DataHelper.getStaticUser());
         Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenThrow(new UserProfileNotFoundException()).thenReturn(null);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
     }
 
     @Test
     public void testGetProfileByUser () throws Exception {
-        Long userId = 20000L;
-        User user = DataHelper.getRandomUser();
-        user.setId(userId);
+        User user = DataHelper.getRandomUser(20000L);
         Mockito.when(userService.getUser(anyLong())).thenReturn(user);
         Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenReturn(DataHelper.getUserProfile(user));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile/id/"+20000)
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
     @Test
     public void testGetProfileByUserNotFound () throws Exception {
-        Long userId = 20000L;
-        User user = DataHelper.getRandomUser();
-        user.setId(userId);
+        User user = DataHelper.getRandomUser(20000L);
         Mockito.when(userService.getUser(anyLong())).thenReturn(user);
         Mockito.when(userProfileService.getProfileByUser(any(User.class))).thenThrow(new UserProfileNotFoundException()).thenReturn(null);
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile/id/"+20000)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/user/profile/id/20000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
     }

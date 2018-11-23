@@ -41,11 +41,6 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         authRequired = true;
     }
 
-    /*@Before
-    public void setUp() throws UserNotFoundException {
-
-    }*/
-
     @Test
     public void testCreateRoom() throws Exception {
         Room room = DataHelper.getRandomRoom(100L);
@@ -58,7 +53,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.createRoomChat(any(Room.class), any(User.class), any(List.class))).thenReturn(DataHelper.getChatRoom(room, 100L));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/chatroom")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(roomRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
     }
@@ -68,7 +63,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatRoomsByUser(any(User.class))).thenReturn(DataHelper.getListOfChatRooms());
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/chatroom")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -77,7 +72,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatById(anyLong())).thenReturn(DataHelper.getChatRoom(DataHelper.getRandomRoom()));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/chatroom/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -86,7 +81,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatById(anyLong())).thenThrow(new ChatNotFoundException()).thenReturn(null);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/chatroom/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
     }
 
@@ -99,7 +94,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatParticipantService.getListOfParticipantsInChat(any(Chat.class))).thenReturn(DataHelper.getListOfChatParticipant());
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/chatroom/users/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -114,7 +109,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/chatroom/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(usersRoomRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isCreated());
     }
@@ -126,7 +121,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatParticipantService.isUserAdmin(any(Chat.class), any(User.class))).thenReturn(true);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/chatroom/id/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -137,7 +132,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatParticipantService.isUserAdmin(any(Chat.class), any(User.class))).thenReturn(false);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/chatroom/id/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isUnauthorized());
     }
 
@@ -151,7 +146,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatById(anyLong())).thenReturn(chat);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/chatroom/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(usersRoomRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isResetContent());
@@ -170,7 +165,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatParticipantService.updateParticipantRol(any(Chat.class), any(User.class), anyBoolean())).thenReturn(DataHelper.getChatParticipant(chat, DataHelper.getRandomUser(1200L), true));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/chatroom/changerol")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRoomRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -182,7 +177,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatById(anyLong())).thenReturn(chat);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/chatroom/leave/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -195,7 +190,7 @@ public class ChatRoomControllerTest extends AbstractControllerTest {
         Mockito.when(chatService.getChatById(anyLong())).thenReturn(chat);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/chatroom/kick")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRoomRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());

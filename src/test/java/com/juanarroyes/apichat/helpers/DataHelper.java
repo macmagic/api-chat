@@ -9,11 +9,6 @@ import java.util.*;
 
 public class DataHelper {
 
-
-    //protected static final String USER_EMAIL = "testuser@example.com";
-    //protected static final String USER_PASSWORD_RAW = "1234password";
-    //protected static final String USER_PASSWORD = "$31$16$GmHTpJldiXpj5PpjCYSFuGAmde2DShDQoepigiENokA";
-
     // User data
     private static final Long USER_ID = 10000L;
     private static final String USER_EMAIL = "testuser@example.com";
@@ -51,6 +46,8 @@ public class DataHelper {
 
     private static final Date STATIC_NOW = new Date();
 
+    private static final Random RANDOM = new Random();
+
     /**
      *
      * @return
@@ -63,6 +60,10 @@ public class DataHelper {
         user.setStatus(USER_STATUS);
         user.setCreated(STATIC_NOW);
         return user;
+    }
+
+    public static Long getStaticUserId() {
+        return USER_ID;
     }
 
     public static String getStaticUserEmail() {
@@ -84,7 +85,7 @@ public class DataHelper {
     public static User getRandomUser(Long userId) {
         User user = new User();
         user.setId(userId);
-        String emailId = String.valueOf(new Random().nextInt(1000));
+        String emailId = String.valueOf(RANDOM.nextInt(1000));
         user.setEmail(USER_EMAIL_TEMPLATE.replace("{id}", emailId));
         user.setPassword(USER_PASSWORD);
         user.setStatus(USER_STATUS);
@@ -119,11 +120,17 @@ public class DataHelper {
     }
 
     public static List<UserRequest> getListOfUserRequest() {
+        return getListOfUserRequest(null);
+    }
+
+    public static List<UserRequest> getListOfUserRequest(User userOwner) {
         List<UserRequest> userRequestList = new ArrayList<>();
 
-        User userOwner = getRandomUser(new Random().nextLong());
+        if(userOwner == null) {
+            userOwner = getRandomUser(RANDOM.nextLong());
+        }
         for(int i = 0; i < LIST_STATIC_COUNT; i++) {
-            userRequestList.add(getUserRequest(userOwner, getRandomUser(new Random().nextLong())));
+            userRequestList.add(getUserRequest(userOwner, getRandomUser(RANDOM.nextLong())));
         }
         return userRequestList;
     }
@@ -159,7 +166,7 @@ public class DataHelper {
      */
     public static Room getRandomRoom(Long roomId) {
 
-        String roomNameId = String.valueOf(new Random().nextInt(1000));
+        String roomNameId = String.valueOf(RANDOM.nextInt(1000));
         Room room = new Room();
         room.setId(roomId);
         room.setRoomName(ROOM_NAME.replace("{id}", roomNameId));
@@ -199,7 +206,7 @@ public class DataHelper {
         List<ContactList> contacts = new ArrayList<>();
         User user = getRandomUser(1000L);
         for(int i = 0; i < LIST_STATIC_COUNT; i++) {
-            contacts.add(getContactList(user, getRandomUser(new Random().nextLong())));
+            contacts.add(getContactList(user, getRandomUser(RANDOM.nextLong())));
         }
         return contacts;
     }
@@ -222,6 +229,18 @@ public class DataHelper {
         return chat;
     }
 
+    public static List<Chat> getListOfChats() {
+        List<Chat> chatList = new ArrayList<>();
+        boolean isRoom = false;
+
+        for(int i = 0; i< LIST_STATIC_COUNT; i++) {
+            isRoom = RANDOM.nextBoolean();
+            Chat chat = (isRoom) ? getChatRoom(DataHelper.getRandomRoom(), RANDOM.nextLong()) : getChatPrivate(RANDOM.nextLong());
+            chatList.add(chat);
+        }
+        return chatList;
+    }
+
     public static Chat getChatRoom(Room room) {
         return getChatRoom(room, null);
     }
@@ -241,8 +260,8 @@ public class DataHelper {
         List<Chat> chatRoomList = new ArrayList<>();
 
         for(int i = 0; i < LIST_STATIC_COUNT; i++) {
-            Room room = getRandomRoom(new Random().nextLong());
-            Chat chat = getChatRoom(room, new Random().nextLong());
+            Room room = getRandomRoom(RANDOM.nextLong());
+            Chat chat = getChatRoom(room, RANDOM.nextLong());
             chatRoomList.add(chat);
         }
 
@@ -270,11 +289,11 @@ public class DataHelper {
     }
 
     public static List<ChatParticipant> getListOfChatParticipant() {
-        Chat chat = getChatRoom(getRandomRoom(new Random().nextLong()));
+        Chat chat = getChatRoom(getRandomRoom(RANDOM.nextLong()));
         List<ChatParticipant> chatParticipantList = new ArrayList<>();
 
         for(int i = 0; i < LIST_STATIC_COUNT; i++) {
-            chatParticipantList.add(DataHelper.getChatParticipant(chat, DataHelper.getRandomUser(new Random().nextLong())));
+            chatParticipantList.add(DataHelper.getChatParticipant(chat, DataHelper.getRandomUser(RANDOM.nextLong())));
         }
         return chatParticipantList;
     }
@@ -291,7 +310,7 @@ public class DataHelper {
      */
     public static Message getRandomMessage(Chat chat, User user, Long userId) {
         Message message = new Message();
-        String random = String.valueOf(new Random().nextInt(1000));
+        String random = String.valueOf(RANDOM.nextInt(1000));
         message.setMessageText(MESSAGE_TEXT.replace("{id}", random));
         message.setAuthorId(user.getId());
         message.setChatId(chat.getId());
@@ -303,7 +322,7 @@ public class DataHelper {
         List<Message> messageList = new ArrayList<>();
 
         for(int i = 0; i < LIST_STATIC_COUNT; i++) {
-            messageList.add(getRandomMessage(chat, getRandomUser(new Random().nextLong())));
+            messageList.add(getRandomMessage(chat, getRandomUser(RANDOM.nextLong())));
         }
         return messageList;
     }
@@ -314,11 +333,11 @@ public class DataHelper {
      */
     public static RoomRequest getRoomRequest() {
         RoomRequest roomRequest = new RoomRequest();
-        String roomNameId = String.valueOf(new Random().nextInt(1000));
+        String roomNameId = String.valueOf(RANDOM.nextInt(1000));
         List<Long> users = new ArrayList<>();
-        users.add(new Random().nextLong());
-        users.add(new Random().nextLong());
-        users.add(new Random().nextLong());
+        users.add(RANDOM.nextLong());
+        users.add(RANDOM.nextLong());
+        users.add(RANDOM.nextLong());
         roomRequest.setRoomName(ROOM_NAME.replace("{id}", roomNameId));
         roomRequest.setUsersRoom(users);
         return roomRequest;
@@ -327,8 +346,7 @@ public class DataHelper {
 
 
     public static Long getRandomId() {
-        Long randomId = new Random().nextLong();
-        return randomId;
+        return RANDOM.nextLong();
     }
 
     public static Date getStaticNow() {

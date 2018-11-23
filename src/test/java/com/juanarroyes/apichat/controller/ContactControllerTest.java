@@ -30,18 +30,12 @@ public class ContactControllerTest extends AbstractControllerTest {
         authRequired = true;
     }
 
-    /*@Before
-    public void setUp() throws UserNotFoundException {
-        //Mock for obtain user from token
-        Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
-    }*/
-
     @Test
     public void testGetContacts() throws Exception {
         Mockito.when(contactListService.getContactsByUserId(anyLong())).thenReturn(DataHelper.getListOfContacts());
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/contact")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -50,7 +44,7 @@ public class ContactControllerTest extends AbstractControllerTest {
         Mockito.when(contactListService.getContactListByIdAndOwnerId(anyLong(), anyLong())).thenReturn(DataHelper.getContactList(DataHelper.getRandomUser(1000L),DataHelper.getRandomUser(1002L)));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/contact/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -61,7 +55,7 @@ public class ContactControllerTest extends AbstractControllerTest {
         Mockito.when(contactListService.blockContact(anyLong(), anyLong())).thenReturn(DataHelper.getContactList(DataHelper.getRandomUser(1000L),DataHelper.getRandomUser(1002L)));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/contact/block")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(contactBlockRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -74,7 +68,7 @@ public class ContactControllerTest extends AbstractControllerTest {
         Mockito.when(contactListService.unblockContact(anyLong(), anyLong())).thenReturn(DataHelper.getContactList(DataHelper.getRandomUser(1000L),DataHelper.getRandomUser(1002L)));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/contact/unblock")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(contactBlockRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -85,7 +79,7 @@ public class ContactControllerTest extends AbstractControllerTest {
         Mockito.when(contactListService.getContactListByIdAndOwnerId(anyLong(), anyLong())).thenReturn(DataHelper.getContactList(DataHelper.getRandomUser(1000L),DataHelper.getRandomUser(1002L)));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/contact/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 }

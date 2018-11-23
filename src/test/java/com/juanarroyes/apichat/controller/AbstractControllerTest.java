@@ -108,16 +108,16 @@ public abstract class AbstractControllerTest {
 
         if(authRequired) {
             //Mock for obtain user from token
-            Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
+            Mockito.when(userService.getUser(anyLong())).thenReturn(DataHelper.getStaticUser());
         }
 
-        Mockito.when(customUserDetailsService.loadUserById(anyLong())).thenReturn(UserPrincipal.create(generateUser()));
+        Mockito.when(customUserDetailsService.loadUserById(anyLong())).thenReturn(UserPrincipal.create(DataHelper.getStaticUser()));
 
-        Mockito.when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(UserPrincipal.create(generateUser()));
+        Mockito.when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(UserPrincipal.create(DataHelper.getStaticUser()));
 
         Mockito.when(userService.existsByEmail(anyString())).thenReturn(false);
 
-        Mockito.when(userService.createUser(anyString(), anyString())).thenReturn(generateUser());
+        Mockito.when(userService.createUser(anyString(), anyString())).thenReturn(DataHelper.getStaticUser());
 
         Mockito.when(tokenService.generateToken(any(UserPrincipal.class))).thenReturn(USER_TOKEN);
 
@@ -125,40 +125,6 @@ public abstract class AbstractControllerTest {
 
         Mockito.when(tokenService.validateToken(anyString())).thenReturn(true);
 
-        Mockito.when(tokenService.getUserIdByToken(anyString())).thenReturn(USER_ID);
-    }
-
-    /*private void setUpMocksAuth() throws UserAlreadyExistException{
-        Mockito.when(customUserDetailsService.loadUserById(anyLong())).thenReturn(UserPrincipal.create(generateUser()));
-
-        Mockito.when(customUserDetailsService.loadUserByUsername(anyString())).thenReturn(UserPrincipal.create(generateUser()));
-
-        Mockito.when(userService.existsByEmail(anyString())).thenReturn(false);
-
-        Mockito.when(userService.createUser(anyString(), anyString())).thenReturn(generateUser());
-
-        Mockito.when(tokenService.generateToken(any(UserPrincipal.class))).thenReturn(USER_TOKEN);
-
-        Mockito.when(tokenService.generateRefreshToken()).thenReturn(USER_REFRESH_TOKEN);
-    }*/
-
-    private static Optional<UserProfile> getUserProfile() {
-        User user = DataHelper.getRandomUser();
-        user.setId(USER_ID);
-        return Optional.of(DataHelper.getUserProfile(user));
-    }
-
-    public static Optional<User> getUser() {
-        return Optional.of(generateUser());
-    }
-
-    public static User generateUser() {
-        User user = new User();
-        user.setId(USER_ID);
-        user.setEmail(USER_EMAIL);
-        user.setPassword(USER_PASSWORD);
-        user.setStatus(1);
-        user.setCreated(new Date());
-        return user;
+        Mockito.when(tokenService.getUserIdByToken(anyString())).thenReturn(DataHelper.getStaticUserId());
     }
 }

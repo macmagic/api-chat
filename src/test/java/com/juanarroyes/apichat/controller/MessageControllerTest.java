@@ -1,13 +1,11 @@
 package com.juanarroyes.apichat.controller;
 
-import com.juanarroyes.apichat.exception.UserNotFoundException;
 import com.juanarroyes.apichat.helpers.DataHelper;
 import com.juanarroyes.apichat.helpers.TokenHelper;
 import com.juanarroyes.apichat.model.Chat;
 import com.juanarroyes.apichat.model.Message;
 import com.juanarroyes.apichat.model.User;
 import com.juanarroyes.apichat.request.MessageRequest;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -35,23 +33,14 @@ public class MessageControllerTest extends AbstractControllerTest {
         authRequired = true;
     }
 
-    /*@Before
-    public void setUp() throws UserNotFoundException {
-        //Mock for obtain user from token
-        Mockito.when(userService.getUser(anyLong())).thenReturn(generateUser());
-    }*/
-
     @Test
     public void testGetMessageByChat() throws Exception {
-        List<Message> messageList = new ArrayList<>();
+        List<Message> messageList = DataHelper.getListOfRandomMessage(DataHelper.getChatPrivate(2000L));
         Mockito.when(chatService.getChatByIdAndUser(anyLong(), any(User.class))).thenReturn(DataHelper.getChatPrivate());
-        messageList.add(DataHelper.getRandomMessage(DataHelper.getChatPrivate(), DataHelper.getRandomUser()));
-        messageList.add(DataHelper.getRandomMessage(DataHelper.getChatPrivate(), DataHelper.getRandomUser()));
-        messageList.add(DataHelper.getRandomMessage(DataHelper.getChatPrivate(), DataHelper.getRandomUser()));
         Mockito.when(messageService.getMessagesByChat(any(Chat.class))).thenReturn(messageList);
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/message/chat/1000")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID));
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
 
@@ -67,7 +56,7 @@ public class MessageControllerTest extends AbstractControllerTest {
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/message/send")
                 .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + TokenHelper.generateToken(USER_ID))
+                .header("Authorization", "Bearer " + TokenHelper.generateToken(DataHelper.getStaticUserId()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(messageRequest));
         mockMvc.perform(requestBuilder).andExpect(status().isOk());
